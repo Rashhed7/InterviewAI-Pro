@@ -85,24 +85,25 @@ function Settings() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-zinc-100 flex flex-col font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex flex-col font-sans transition-colors duration-300 eye-comfort-glow">
       <Navbar />
 
       <main className="max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 my-2 space-y-8">
-        <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Account & Studio Settings</h1>
-          <p className="text-zinc-400 text-xs mt-1">
+        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl dark:bg-indigo-500/10 warm:bg-amber-600/15" />
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] tracking-tight">Account & Studio Settings</h1>
+          <p className="text-slate-600 dark:text-slate-300 warm:text-[#736758] text-xs leading-6 mt-1">
             Customize visual theme, notification alerts, language preferences, and security settings.
           </p>
         </div>
 
         {/* SECTION 1: THEME CUSTOMIZATION */}
-        <section className="p-6 rounded-3xl border border-zinc-800 bg-[#111113] space-y-4 shadow-xl">
-          <div className="space-y-1 border-b border-zinc-800 pb-3">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <Sun className="w-4 h-4 text-blue-400" /> Visual Theme Mode
+        <section className="glass-card rounded-3xl p-6 space-y-4">
+          <div className="space-y-1 border-b border-slate-200/80 dark:border-slate-800 warm:border-[#e2d9c8] pb-3">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] flex items-center gap-2">
+              <Sun className="w-4 h-4 text-amber-600 dark:text-indigo-400 warm:text-amber-700" /> Visual Theme Mode
             </h2>
-            <p className="text-xs text-zinc-400">Choose visual theme preference for InterviewAI Pro.</p>
+            <p className="text-xs text-slate-600 dark:text-slate-300 warm:text-[#736758]">Choose visual theme preference for InterviewAI Pro.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">

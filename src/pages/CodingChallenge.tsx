@@ -218,25 +218,25 @@ function CodingChallenge() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-zinc-100 flex flex-col font-sans selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex flex-col font-sans transition-colors duration-300 eye-comfort-glow">
       <Navbar />
 
       <main className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 my-2 space-y-6">
         {/* STUDIO HEADER BAR */}
-        <div className="bg-[#111113] border border-zinc-800 rounded-3xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div className="glass-card rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:bg-indigo-500/20 dark:border-indigo-500/30 dark:text-indigo-400 warm:bg-amber-600/20 warm:border-amber-600/30 warm:text-amber-800 flex items-center justify-center font-bold">
               <Code2 className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base font-extrabold text-white">{selectedProblem.title}</h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-950 border border-zinc-800 text-emerald-400 font-bold">
+                <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">{selectedProblem.title}</h1>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 warm:text-emerald-800 font-bold">
                   {selectedProblem.difficulty}
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-400">
-                Category: {selectedProblem.category} • Tagged for {selectedProblem.companyCategory}
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 warm:text-[#736758]">
+                Category: {selectedProblem.category} &bull; Tagged for {selectedProblem.companyCategory}
               </p>
             </div>
           </div>

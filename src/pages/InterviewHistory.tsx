@@ -16,24 +16,25 @@ function InterviewHistory() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex flex-col font-sans transition-colors duration-300 eye-comfort-glow">
       <Navbar />
 
-      <main className="max-w-5xl w-full mx-auto p-6 flex-1 my-4 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Interview Practice History 📚</h1>
-          <p className="text-gray-400 text-sm mt-1">
+      <main className="max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 my-2 space-y-6">
+        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl dark:bg-indigo-500/10 warm:bg-amber-600/15" />
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">Interview Practice History 📚</h1>
+          <p className="text-slate-600 dark:text-slate-300 warm:text-[#736758] text-xs leading-6 mt-1">
             Review all completed AI mock interview sessions, scores, and feedback logs.
           </p>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-gray-400">Loading interview records...</div>
+          <div className="p-8 text-center text-slate-500 dark:text-slate-400 warm:text-[#736758]">Loading interview records...</div>
         ) : history.length === 0 ? (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center space-y-4 shadow-xl">
+          <div className="glass-card rounded-3xl p-12 text-center space-y-4">
             <div className="text-4xl">🎙️</div>
-            <h2 className="text-xl font-bold text-white">No Mock Interviews Completed Yet</h2>
-            <p className="text-gray-400 text-xs max-w-sm mx-auto">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">No Mock Interviews Completed Yet</h2>
+            <p className="text-slate-600 dark:text-slate-300 warm:text-[#736758] text-xs max-w-sm mx-auto">
               Launch an AI Mock Interview session to test your knowledge and record your scores.
             </p>
           </div>
@@ -42,7 +43,7 @@ function InterviewHistory() {
             {history.map((session) => (
               <div
                 key={session.id}
-                className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4"
+                className="glass-card rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:-translate-y-0.5"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">

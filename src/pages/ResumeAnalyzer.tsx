@@ -61,18 +61,19 @@ function ResumeAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-zinc-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex flex-col font-sans transition-colors duration-300 eye-comfort-glow">
       <Navbar />
 
       <main className="max-w-6xl w-full mx-auto p-4 lg:p-6 flex-1 my-2 space-y-6">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-400 text-xs font-bold mb-3">
+        <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl dark:bg-indigo-500/10 warm:bg-amber-600/15" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:bg-indigo-500/20 dark:border-indigo-500/30 dark:text-indigo-400 warm:bg-amber-600/20 warm:border-amber-600/30 warm:text-amber-800 text-xs font-bold mb-3">
             <Sparkles className="w-3.5 h-3.5" /> Powered by Smart AI Resume Engine
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] tracking-tight">
             ATS Resume Analyzer & Bullet Rewriter
           </h1>
-          <p className="text-zinc-400 text-sm mt-1">
+          <p className="text-slate-600 dark:text-slate-300 warm:text-[#736758] text-xs leading-6 mt-1 max-w-2xl">
             Get instant ATS score breakdowns, keyword optimization, salary range estimations, and automated high-impact metric-driven bullet point rewrites.
           </p>
         </div>
