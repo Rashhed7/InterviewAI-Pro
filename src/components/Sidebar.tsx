@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -11,8 +11,12 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   LogOut,
+  CreditCard,
+  Zap,
 } from "lucide-react";
 import { authService } from "../services/authService";
+import { subscriptionService } from "../services/subscriptionService";
+import { SubscriptionBadge } from "./subscription/SubscriptionBadge";
 
 export const sidebarNavLinks = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
@@ -21,6 +25,7 @@ export const sidebarNavLinks = [
   { label: "Resume Analyzer", path: "/resume-analyzer", icon: FileText },
   { label: "Reports", path: "/interview-history", icon: History },
   { label: "Analytics", path: "/analytics", icon: BarChart3 },
+  { label: "Pricing", path: "/pricing", icon: CreditCard },
 ];
 
 interface SidebarProps {
@@ -33,9 +38,16 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const [userPlan, setUserPlan] = useState(subscriptionService.getSubscription().plan);
 
   const collapsed = externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
   const toggleCollapse = onToggleCollapse || (() => setInternalCollapsed((prev) => !prev));
+
+  useEffect(() => {
+    subscriptionService.fetchSubscriptionFromBackend().then((sub) => {
+      setUserPlan(sub.plan);
+    });
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
@@ -51,9 +63,12 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
       {/* Sidebar Header with Menu Label */}
       <div className={`flex h-16 items-center border-b border-slate-200/80 px-4 dark:border-slate-800 warm:border-[#e2d9c8] ${collapsed ? "justify-center" : "justify-between"}`}>
         {!collapsed && (
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 warm:text-[#736758]">
-            Menu
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 warm:text-[#736758]">
+              Menu
+            </span>
+            <SubscriptionBadge plan={userPlan} />
+          </div>
         )}
 
         <button
@@ -88,6 +103,24 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
             </Link>
           );
         })}
+
+        {/* Upgrade Banner in Sidebar for FREE users */}
+        {userPlan === "FREE" && !collapsed && (
+          <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-indigo-500/10 to-transparent border border-amber-500/30 space-y-2">
+            <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-600 dark:text-indigo-400 warm:text-amber-800">
+              <Zap className="w-3.5 h-3.5 animate-pulse" /> Upgrade to Pro
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 warm:text-[#736758] leading-tight">
+              Unlock unlimited AI mock interviews & ATS scans.
+            </p>
+            <Link
+              to="/pricing"
+              className="inline-flex w-full items-center justify-center py-2 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-indigo-600 text-white text-xs font-extrabold shadow-md hover:from-amber-500 hover:to-indigo-500 transition"
+            >
+              Upgrade Now
+            </Link>
+          </div>
+        )}
       </nav>
 
       {/* Footer User Info & Settings */}

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authService, type UserProfile } from "../services/authService";
 import Navbar from "../components/Navbar";
+import { subscriptionService, type UserSubscriptionData } from "../services/subscriptionService";
+import { SubscriptionBadge } from "../components/subscription/SubscriptionBadge";
 
 const PRESET_AVATARS = [
   "https://api.dicebear.com/7.x/bottts/svg?seed=antigravity1",
@@ -14,6 +16,7 @@ const PRESET_AVATARS = [
 function Profile() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [userSub, setUserSub] = useState<UserSubscriptionData>(subscriptionService.getSubscription());
 
   // Profile Edit Form State
   const [name, setName] = useState("");
@@ -45,6 +48,10 @@ function Profile() {
     setUser(currentUser);
     setName(currentUser.name || "");
     setAvatar(currentUser.avatar || "");
+
+    subscriptionService.fetchSubscriptionFromBackend().then((sub) => {
+      setUserSub(sub);
+    });
 
     // Fetch fresh profile from backend
     authService.fetchProfile().then((freshUser) => {
@@ -191,6 +198,49 @@ function Profile() {
                 <span className="block text-gray-500 uppercase font-semibold">Joined Date</span>
                 <span className="font-medium text-slate-200">{formattedJoinedDate}</span>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SUBSCRIPTION & USAGE STATS CARD */}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-white">Subscription & Plan Status</h3>
+                <SubscriptionBadge plan={userSub.plan} />
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Status: <span className="font-semibold text-emerald-400">{userSub.plan === "FREE" ? "Active Free Tier" : `${userSub.plan} Plan Active`}</span>
+              </p>
+            </div>
+
+            <Link
+              to="/pricing"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg transition"
+            >
+              {userSub.plan === "FREE" ? "Upgrade Plan" : "Manage Subscription"}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs pt-1">
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+              <span className="text-gray-400 font-semibold block">AI Interviews Today</span>
+              <span className="text-lg font-extrabold text-white font-mono">
+                {userSub.plan === "FREE" ? `${userSub.dailyInterviewCount} / 3` : "Unlimited"}
+              </span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+              <span className="text-gray-400 font-semibold block">Resume Analyses Today</span>
+              <span className="text-lg font-extrabold text-white font-mono">
+                {userSub.plan === "FREE" ? `${userSub.dailyResumeCount} / 3` : "Unlimited"}
+              </span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+              <span className="text-gray-400 font-semibold block">Coding Challenges Today</span>
+              <span className="text-lg font-extrabold text-white font-mono">
+                {userSub.plan === "FREE" ? `${userSub.dailyCodingCount} / 5` : "Unlimited"}
+              </span>
             </div>
           </div>
         </div>

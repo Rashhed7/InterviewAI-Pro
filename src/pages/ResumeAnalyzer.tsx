@@ -5,6 +5,8 @@ import { Sparkles, Upload, ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { interviewService, type FullResumeAnalysisResponse } from "../services/interviewService";
+import { subscriptionService } from "../services/subscriptionService";
+import { UpgradeModal } from "../components/subscription/UpgradeModal";
 
 const TARGET_ROLES = [
   "Full Stack Engineer",
@@ -26,6 +28,7 @@ function ResumeAnalyzer() {
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<FullResumeAnalysisResponse | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,8 +51,16 @@ function ResumeAnalyzer() {
       return;
     }
 
+    // Check Limit
+    const check = subscriptionService.checkUsageLimit("resume");
+    if (!check.allowed) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     setLoading(true);
     try {
+      subscriptionService.incrementUsage("resume");
       const res = await interviewService.analyzeResumeFull(resumeText, selectedRole);
       if (res?.success) {
         setAnalysisResult(res.analysis);
@@ -231,6 +242,12 @@ function ResumeAnalyzer() {
         )}
       </main>
       </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        featureType="resume"
+      />
     </div>
   );
 }

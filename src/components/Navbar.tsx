@@ -19,9 +19,13 @@ import {
   BarChart3,
   Settings as SettingsIcon,
   ShieldCheck,
+  Zap,
+  CreditCard,
 } from "lucide-react";
 import { authService } from "../services/authService";
 import { useTheme } from "../context/ThemeContext";
+import { subscriptionService } from "../services/subscriptionService";
+import { SubscriptionBadge } from "./subscription/SubscriptionBadge";
 
 export function Navbar() {
   const location = useLocation();
@@ -32,9 +36,16 @@ export function Navbar() {
   const [menuBarOpen, setMenuBarOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [userPlan, setUserPlan] = useState(subscriptionService.getSubscription().plan);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    subscriptionService.fetchSubscriptionFromBackend().then((sub) => {
+      setUserPlan(sub.plan);
+    });
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,6 +72,7 @@ export function Navbar() {
     { label: "Resume Analyzer", path: "/resume-analyzer", icon: FileText },
     { label: "Reports", path: "/interview-history", icon: History },
     { label: "Analytics", path: "/analytics", icon: BarChart3 },
+    { label: "Pricing", path: "/pricing", icon: CreditCard },
   ];
 
   // Determine page title for desktop header
@@ -72,6 +84,7 @@ export function Navbar() {
       case "/resume-analyzer": return "ATS Resume Analyzer";
       case "/interview-history": return "Interview Reports";
       case "/analytics": return "Performance Analytics";
+      case "/pricing": return "Subscription Plans";
       case "/settings": return "Account Settings";
       default: return "InterviewAI PRO";
     }
@@ -122,6 +135,17 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2.5">
+          {/* Conditional Upgrade Button for FREE Users */}
+          {userPlan === "FREE" && (
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md transition-all hover:scale-105 active:scale-95 shrink-0"
+            >
+              <Zap className="w-3.5 h-3.5 animate-pulse text-amber-300" />
+              <span>Upgrade</span>
+            </Link>
+          )}
+
           {/* Theme Switcher */}
           <button
             type="button"
@@ -223,10 +247,21 @@ export function Navbar() {
                       transition={{ duration: 0.15 }}
                       className="absolute right-0 mt-2 w-56 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#111113] p-2 shadow-2xl z-50 space-y-1 text-xs"
                     >
-                      <div className="p-3 border-b border-zinc-200 dark:border-zinc-800 space-y-0.5">
-                        <p className="font-bold text-zinc-900 dark:text-zinc-100 truncate">{currentUser.name}</p>
+                      <div className="p-3 border-b border-zinc-200 dark:border-zinc-800 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-zinc-900 dark:text-zinc-100 truncate">{currentUser.name}</p>
+                          <SubscriptionBadge plan={userPlan} />
+                        </div>
                         <p className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">{currentUser.email}</p>
                       </div>
+
+                      <Link
+                        to="/pricing"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="w-full text-left px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 flex items-center gap-2 font-medium"
+                      >
+                        <CreditCard className="w-4 h-4 text-zinc-400" /> Subscription & Pricing
+                      </Link>
 
                       <Link
                         to="/settings"

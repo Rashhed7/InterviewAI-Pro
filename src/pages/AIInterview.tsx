@@ -32,6 +32,8 @@ import { AntiCheatingMonitor } from "../components/interview/AntiCheatingMonitor
 import { InterviewReportView } from "../components/interview/InterviewReportView";
 import { voiceManager } from "../utils/voiceSynthesis";
 import { COMPANY_CATEGORIES } from "../utils/companyCategories";
+import { subscriptionService } from "../services/subscriptionService";
+import { UpgradeModal } from "../components/subscription/UpgradeModal";
 import {
   interviewService,
   type InterviewMode,
@@ -209,12 +211,22 @@ function AIInterview() {
     else startSpeechRecognition();
   };
 
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
   const handleStartInterview = async () => {
+    // Check Subscription Limit
+    const check = subscriptionService.checkUsageLimit("interviews");
+    if (!check.allowed) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     const effectiveRole = selectedMode === "Custom Role" ? customRoleInput || "Software Engineer" : targetRole;
     setLoading(true);
     setAiStatus("Thinking...");
 
     try {
+      subscriptionService.incrementUsage("interviews");
       const res = await interviewService.startInterview({
         role: effectiveRole,
         mode: selectedMode,
@@ -849,6 +861,13 @@ function AIInterview() {
         )}
       </main>
       </div>
+
+      {/* Upgrade Modal for Limit Enforcement */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        featureType="interviews"
+      />
     </div>
   );
 }

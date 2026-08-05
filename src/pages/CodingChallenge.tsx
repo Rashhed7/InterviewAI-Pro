@@ -18,6 +18,8 @@ import { EXPANDED_PROBLEM_BANK, type ExpandedCodingProblem, type QuestionTestCas
 import { AlgorithmVisualizer } from "../components/coding/AlgorithmVisualizer";
 import { CodeNotebook } from "../components/coding/CodeNotebook";
 import { interviewService, type CodingAnalysisResponse } from "../services/interviewService";
+import { subscriptionService } from "../services/subscriptionService";
+import { UpgradeModal } from "../components/subscription/UpgradeModal";
 
 type ModeType = "practice" | "learning" | "mock";
 type LeftTabType = "problem" | "hints" | "visualizer" | "notebook";
@@ -173,10 +175,19 @@ function CodingChallenge() {
     }, 600);
   };
 
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
   // Submit Code for AI Audit
   const handleSubmitSolution = async () => {
+    const check = subscriptionService.checkUsageLimit("coding");
+    if (!check.allowed) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     setSubmitting(true);
     try {
+      subscriptionService.incrementUsage("coding");
       const res = await interviewService.analyzeCoding({
         sessionId: "coding-session-" + Date.now(),
         problemTitle: selectedProblem.title,
@@ -662,6 +673,12 @@ function CodingChallenge() {
         )}
       </main>
       </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        featureType="coding"
+      />
     </div>
   );
 }

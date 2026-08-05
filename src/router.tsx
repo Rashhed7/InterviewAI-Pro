@@ -14,6 +14,7 @@ import ResumeAnalyzer from "./pages/ResumeAnalyzer";
 import InterviewHistory from "./pages/InterviewHistory";
 import Analytics from "./pages/Analytics";
 import Leaderboard from "./pages/Leaderboard";
+import Pricing from "./pages/Pricing";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -145,6 +146,15 @@ const router = createBrowserRouter([
           <Leaderboard />
         </PageTransition>
       </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/pricing",
+    element: (
+      <PageTransition>
+        <Pricing />
+      </PageTransition>
     ),
   },
 

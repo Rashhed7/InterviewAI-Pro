@@ -11,12 +11,15 @@ import {
   Sparkles,
   Zap,
   TrendingUp,
+  CreditCard,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { OnboardingModal } from "../components/onboarding/OnboardingModal";
 import { authService, type UserProfile } from "../services/authService";
 import { interviewService, type InterviewSessionData, type UserAIMemory } from "../services/interviewService";
+import { subscriptionService, type UserSubscriptionData } from "../services/subscriptionService";
+import { SubscriptionBadge } from "../components/subscription/SubscriptionBadge";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -25,6 +28,7 @@ function Dashboard() {
   const [userMemory, setUserMemory] = useState<UserAIMemory | null>(null);
   const [recentSessions, setRecentSessions] = useState<InterviewSessionData[]>([]);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [userSub, setUserSub] = useState<UserSubscriptionData>(subscriptionService.getSubscription());
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -35,6 +39,10 @@ function Dashboard() {
 
     setUser(currentUser);
     setShowOnboarding(!localStorage.getItem("hasCompletedOnboarding"));
+
+    subscriptionService.fetchSubscriptionFromBackend().then((sub) => {
+      setUserSub(sub);
+    });
 
     Promise.all([
       interviewService.getUserMemory().then((res) => {
@@ -270,6 +278,112 @@ function Dashboard() {
               </motion.div>
             </motion.div>
           </section>
+
+          {/* SUBSCRIPTION & DAILY USAGE CARD */}
+          <motion.section
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
+            className="glass-card rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800 warm:border-[#e2d9c8] space-y-4 shadow-sm"
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 warm:border-[#e2d9c8] pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:bg-indigo-500/20 dark:text-indigo-400 warm:bg-amber-600/20 warm:text-amber-800 flex items-center justify-center font-bold">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-extrabold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">
+                      Subscription & Daily Limits
+                    </h2>
+                    <SubscriptionBadge plan={userSub.plan} />
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 warm:text-[#736758] mt-0.5">
+                    {userSub.plan === "FREE" ? "Daily usage resets automatically every midnight." : "Unlimited practice enabled with your active subscription."}
+                  </p>
+                </div>
+              </div>
+
+              {userSub.plan === "FREE" ? (
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md transition"
+                >
+                  <Zap className="w-3.5 h-3.5" /> Upgrade Plan
+                </Link>
+              ) : (
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200/80 bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e] text-xs font-bold transition hover:bg-slate-50"
+                >
+                  Manage Subscription
+                </Link>
+              )}
+            </div>
+
+            {/* Daily Usage Progress Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+              {/* Interviews Count */}
+              <div className="p-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-900/60 warm:bg-[#eae3d2]/60 border border-slate-200/60 dark:border-slate-800 warm:border-[#e2d9c8] space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                    <Video className="w-3.5 h-3.5 text-amber-500" /> AI Interviews
+                  </span>
+                  <span className="font-mono font-extrabold text-amber-600 dark:text-indigo-400 warm:text-amber-700">
+                    {userSub.plan === "FREE" ? `${userSub.dailyInterviewCount}/3` : "Unlimited"}
+                  </span>
+                </div>
+                {userSub.plan === "FREE" && (
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-amber-500 h-full rounded-full transition-all duration-300"
+                      style={{ width: `${Math.min(100, (userSub.dailyInterviewCount / 3) * 100)}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Resume Scans Count */}
+              <div className="p-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-900/60 warm:bg-[#eae3d2]/60 border border-slate-200/60 dark:border-slate-800 warm:border-[#e2d9c8] space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-emerald-500" /> Resume Analyses
+                  </span>
+                  <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 warm:text-emerald-700">
+                    {userSub.plan === "FREE" ? `${userSub.dailyResumeCount}/3` : "Unlimited"}
+                  </span>
+                </div>
+                {userSub.plan === "FREE" && (
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-emerald-500 h-full rounded-full transition-all duration-300"
+                      style={{ width: `${Math.min(100, (userSub.dailyResumeCount / 3) * 100)}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Coding Challenges Count */}
+              <div className="p-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-900/60 warm:bg-[#eae3d2]/60 border border-slate-200/60 dark:border-slate-800 warm:border-[#e2d9c8] space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                    <Code2 className="w-3.5 h-3.5 text-blue-500 dark:text-indigo-400" /> Coding Practice
+                  </span>
+                  <span className="font-mono font-extrabold text-blue-600 dark:text-indigo-400 warm:text-amber-700">
+                    {userSub.plan === "FREE" ? `${userSub.dailyCodingCount}/5` : "Unlimited"}
+                  </span>
+                </div>
+                {userSub.plan === "FREE" && (
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-blue-500 dark:bg-indigo-500 h-full rounded-full transition-all duration-300"
+                      style={{ width: `${Math.min(100, (userSub.dailyCodingCount / 5) * 100)}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.section>
 
           {/* STATS SUMMARY */}
           <motion.section

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import emailRoutes from "./routes/email.routes";
 import interviewRoutes from "./routes/interview.routes";
+import subscriptionRoutes from "./routes/subscription.routes";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/auth", authRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -24,6 +24,12 @@ model User {
 
   provider          String   @default("email")
 
+  plan                String   @default("FREE")
+  dailyInterviewCount Int      @default(0)
+  dailyResumeCount    Int      @default(0)
+  dailyCodingCount    Int      @default(0)
+  lastResetDate       DateTime @default(now())
+
   interviews        InterviewSession[]
   submissions       CodingSubmission[]
 
