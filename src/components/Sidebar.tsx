@@ -13,6 +13,7 @@ import {
   LogOut,
   CreditCard,
   Zap,
+  ShieldCheck,
 } from "lucide-react";
 import { authService } from "../services/authService";
 import { subscriptionService } from "../services/subscriptionService";
@@ -103,6 +104,18 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
             </Link>
           );
         })}
+
+        {/* Admin Link if role is ADMIN */}
+        {currentUser && ((currentUser as any).role === "ADMIN" || (currentUser as any).role === "admin" || currentUser.email === "admin@interviewai.pro" || currentUser.email === "admin@gmail.com") && (
+          <Link
+            to="/admin"
+            className="flex items-center gap-3.5 rounded-xl px-3.5 py-3 text-xs font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all"
+            title={collapsed ? "Admin Console" : undefined}
+          >
+            <ShieldCheck className="h-4 w-4 shrink-0 text-amber-500" />
+            {!collapsed && <span>Admin Console</span>}
+          </Link>
+        )}
 
         {/* Upgrade Banner in Sidebar for FREE users */}
         {userPlan === "FREE" && !collapsed && (

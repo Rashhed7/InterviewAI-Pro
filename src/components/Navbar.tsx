@@ -263,6 +263,16 @@ export function Navbar() {
                         <CreditCard className="w-4 h-4 text-zinc-400" /> Subscription & Pricing
                       </Link>
 
+                      {((currentUser as any).role === "ADMIN" || (currentUser as any).role === "admin" || currentUser.email === "admin@interviewai.pro" || currentUser.email === "admin@gmail.com") && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="w-full text-left px-3 py-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 flex items-center gap-2 font-extrabold"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-amber-500" /> Admin Console
+                        </Link>
+                      )}
+
                       <Link
                         to="/settings"
                         onClick={() => setUserDropdownOpen(false)}

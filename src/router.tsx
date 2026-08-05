@@ -16,8 +16,25 @@ import Analytics from "./pages/Analytics";
 import Leaderboard from "./pages/Leaderboard";
 import Pricing from "./pages/Pricing";
 
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminUserDetails from "./pages/admin/AdminUserDetails";
+import AdminSubscriptions from "./pages/admin/AdminSubscriptions";
+import AdminPayments from "./pages/admin/AdminPayments";
+import AdminCoupons from "./pages/admin/AdminCoupons";
+import AdminAIUsage from "./pages/admin/AdminAIUsage";
+import AdminFeatureLimits from "./pages/admin/AdminFeatureLimits";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminSupport from "./pages/admin/AdminSupport";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminLogs from "./pages/admin/AdminLogs";
+import AdminSettings from "./pages/admin/AdminSettings";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import AdminRoute from "./components/admin/AdminRoute";
 import { PageTransition } from "./components/layout/PageTransition";
 
 const router = createBrowserRouter([
@@ -177,6 +194,148 @@ const router = createBrowserRouter([
           <Settings />
         </PageTransition>
       </ProtectedRoute>
+    ),
+  },
+
+  /* Admin Routes Protected by AdminRoute */
+  {
+    path: "/admin",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminDashboard />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/users",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminUsers />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/users/:userId",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminUserDetails />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/subscriptions",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminSubscriptions />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/payments",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminPayments />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/coupons",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminCoupons />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/ai-usage",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminAIUsage />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/feature-limits",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminFeatureLimits />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/reports",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminReports />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/support",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminSupport />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/notifications",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminNotifications />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/analytics",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminAnalytics />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/logs",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminLogs />
+        </PageTransition>
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/settings",
+    element: (
+      <AdminRoute>
+        <PageTransition>
+          <AdminSettings />
+        </PageTransition>
+      </AdminRoute>
     ),
   },
 

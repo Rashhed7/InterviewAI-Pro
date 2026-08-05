@@ -13,7 +13,11 @@ model User {
   email             String   @unique
   password          String
   avatar            String?
+  phone             String?
+  country           String?  @default("India")
 
+  role              String   @default("USER") // USER | ADMIN
+  status            String   @default("ACTIVE") // ACTIVE | BLOCKED
   isVerified        Boolean  @default(false)
 
   verificationToken String?
@@ -29,9 +33,12 @@ model User {
   dailyResumeCount    Int      @default(0)
   dailyCodingCount    Int      @default(0)
   lastResetDate       DateTime @default(now())
+  lastLoginAt         DateTime? @default(now())
 
   interviews        InterviewSession[]
   submissions       CodingSubmission[]
+  payments          Payment[]
+  tickets           SupportTicket[]
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -60,4 +67,88 @@ model CodingSubmission {
   code        String
   status      String   @default("Passed")
   createdAt   DateTime @default(now())
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  paymentId   String   @unique
+  orderId     String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gateway     String   @default("Razorpay")
+  amount      Float
+  tax         Float    @default(0)
+  discount    Float    @default(0)
+  couponCode  String?
+  plan        String   @default("PRO")
+  status      String   @default("SUCCESS") // SUCCESS | PENDING | REFUNDED | FAILED
+  invoiceUrl  String?
+  createdAt   DateTime @default(now())
+}
+
+model Coupon {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  description    String
+  discountType   String   @default("PERCENTAGE") // PERCENTAGE | FIXED
+  amount         Float
+  expiryDate     DateTime
+  maxUses        Int      @default(100)
+  currentUses    Int      @default(0)
+  minPurchase    Float    @default(0)
+  allowedPlans   String   @default("PRO,PREMIUM")
+  status         String   @default("ACTIVE") // ACTIVE | DISABLED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SupportTicket {
+  id           String   @id @default(cuid())
+  ticketNumber String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject      String
+  description  String
+  status       String   @default("OPEN") // OPEN | PENDING | CLOSED
+  priority     String   @default("MEDIUM") // LOW | MEDIUM | HIGH | URGENT
+  assignedTo   String?
+  repliesJson  String   @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AdminNotification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  target    String   @default("EVERYONE") // EVERYONE | FREE | PRO | PREMIUM | SINGLE
+  type      String   @default("INFO") // INFO | SUCCESS | WARNING | MAINTENANCE
+  sentBy    String   @default("ADMIN")
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  adminId    String
+  adminEmail String
+  action     String
+  resource   String
+  details    String
+  oldValue   String?
+  newValue   String?
+  createdAt  DateTime @default(now())
+}
+
+model FeatureLimitConfig {
+  id                       String   @id @default(cuid())
+  plan                     String   @unique // FREE | PRO | PREMIUM
+  interviewLimit           Int      @default(3)
+  resumeLimit              Int      @default(3)
+  codingLimit               Int      @default(5)
+  voiceEnabled             Boolean  @default(false)
+  cameraEnabled            Boolean  @default(false)
+  companyInterviewsEnabled Boolean  @default(false)
+  pdfExportEnabled         Boolean  @default(false)
+  advancedAnalyticsEnabled Boolean  @default(false)
+  updatedAt                DateTime @updatedAt
 }

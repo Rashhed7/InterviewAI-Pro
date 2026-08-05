@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.routes";
 import emailRoutes from "./routes/email.routes";
 import interviewRoutes from "./routes/interview.routes";
 import subscriptionRoutes from "./routes/subscription.routes";
+import adminRoutes from "./routes/admin.routes";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
