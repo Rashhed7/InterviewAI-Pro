@@ -80,10 +80,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl transition-colors duration-200 dark:border-slate-800 dark:bg-[#0b0f19]/90 warm:border-[#e2d9c8] warm:bg-[#fffdf9]/95">
       <div className="mx-auto flex h-16 w-full items-center justify-between gap-4 px-4 sm:px-6">
-        {/* Mobile Logo & Desktop Page Title */}
+        {/* Navbar Logo & Section Title */}
         <div className="flex items-center gap-3">
-          {/* Logo visible on mobile screens only to avoid overlap with sidebar */}
-          <Link to="/" className="flex items-center gap-2.5 group lg:hidden">
+          <Link to="/" className="flex items-center gap-2.5 group">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm transition-transform duration-200 group-hover:scale-105 dark:bg-white dark:text-slate-950 warm:bg-[#d97706] warm:text-white">
               <Sparkles className="h-5 w-5" />
             </div>
@@ -92,12 +91,11 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Page Title visible on desktop screens */}
-          <div className="hidden lg:flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 warm:text-[#736758]">Workspace</span>
-            <span className="text-xs text-slate-300 dark:text-slate-700 warm:text-[#e2d9c8]">&bull;</span>
-            <h1 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">{getPageTitle()}</h1>
-          </div>
+          <span className="hidden sm:inline text-xs text-slate-300 dark:text-slate-700 warm:text-[#e2d9c8]">&bull;</span>
+
+          <h1 className="hidden sm:inline text-xs font-bold text-slate-600 dark:text-slate-300 warm:text-[#736758]">
+            {getPageTitle()}
+          </h1>
         </div>
 
         {/* Center Navigation (Visible on tablet, hidden on desktop where Sidebar is active) */}
