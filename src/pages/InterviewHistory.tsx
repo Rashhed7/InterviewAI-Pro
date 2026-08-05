@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import { interviewService, type InterviewSessionData } from "../services/interviewService";
 
 function InterviewHistory() {
@@ -16,8 +17,10 @@ function InterviewHistory() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex flex-col font-sans transition-colors duration-300 eye-comfort-glow">
-      <Navbar />
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex font-sans transition-colors duration-300 eye-comfort-glow">
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Navbar />
 
       <main className="max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 my-2 space-y-6">
         <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
@@ -69,6 +72,7 @@ function InterviewHistory() {
           </div>
         )}
       </main>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { Moon, Sun, Laptop, Bell, Globe, Shield, Trash2, Check } from "lucide-re
 import { authService, type UserProfile } from "../services/authService";
 import { useTheme } from "../context/ThemeContext";
 import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 function Settings() {
   const navigate = useNavigate();
@@ -85,8 +86,10 @@ function Settings() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex flex-col font-sans transition-colors duration-300 eye-comfort-glow">
-      <Navbar />
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex font-sans transition-colors duration-300 eye-comfort-glow">
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Navbar />
 
       <main className="max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 my-2 space-y-8">
         <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
@@ -263,7 +266,6 @@ function Settings() {
             <Trash2 className="w-4 h-4" /> Permanently Delete Account
           </button>
         </section>
-      </main>
 
       {/* Delete Account Modal */}
       {showDeleteModal && (
@@ -312,6 +314,8 @@ function Settings() {
           </div>
         </div>
       )}
+      </main>
+      </div>
     </div>
   );
 }
