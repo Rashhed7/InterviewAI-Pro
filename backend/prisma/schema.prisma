@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  password          String
+  avatar            String?
+
+  isVerified        Boolean  @default(false)
+
+  verificationToken String?
+  verificationExpiry DateTime?
+
+  resetPasswordToken String?
+  resetPasswordExpiry DateTime?
+
+  provider          String   @default("email")
+
+  interviews        InterviewSession[]
+  submissions       CodingSubmission[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model InterviewSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  role        String
+  difficulty  String   @default("Medium")
+  score       Int
+  feedback    String
+  answersJson String   @default("[]")
+  createdAt   DateTime @default(now())
+}
+
+model CodingSubmission {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId   String
+  title       String
+  language    String
+  code        String
+  status      String   @default("Passed")
+  createdAt   DateTime @default(now())
+}

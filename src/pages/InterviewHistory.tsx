@@ -1,0 +1,75 @@
+import { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import { interviewService, type InterviewSessionData } from "../services/interviewService";
+
+function InterviewHistory() {
+  const [history, setHistory] = useState<InterviewSessionData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    interviewService.getHistory().then((res) => {
+      if (res.history) {
+        setHistory(res.history);
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      <Navbar />
+
+      <main className="max-w-5xl w-full mx-auto p-6 flex-1 my-4 space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Interview Practice History 📚</h1>
+          <p className="text-gray-400 text-sm mt-1">
+            Review all completed AI mock interview sessions, scores, and feedback logs.
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="p-8 text-center text-gray-400">Loading interview records...</div>
+        ) : history.length === 0 ? (
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center space-y-4 shadow-xl">
+            <div className="text-4xl">🎙️</div>
+            <h2 className="text-xl font-bold text-white">No Mock Interviews Completed Yet</h2>
+            <p className="text-gray-400 text-xs max-w-sm mx-auto">
+              Launch an AI Mock Interview session to test your knowledge and record your scores.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {history.map((session) => (
+              <div
+                key={session.id}
+                className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <h3 className="font-bold text-white text-base">{session.title}</h3>
+                    <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2.5 py-0.5 rounded font-semibold">
+                      {session.difficulty}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 leading-relaxed">{session.feedback}</p>
+                  <p className="text-[11px] text-gray-500 pt-1">
+                    Completed on {new Date(session.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4 shrink-0">
+                  <div className="text-center px-4 py-2 bg-slate-950/80 rounded-xl border border-slate-800">
+                    <span className="block text-[10px] text-gray-400 uppercase font-semibold">Score</span>
+                    <span className="text-2xl font-extrabold text-emerald-400">{session.score}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+export default InterviewHistory;
