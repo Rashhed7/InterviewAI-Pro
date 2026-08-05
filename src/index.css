@@ -58,27 +58,72 @@
   }
 }
 
-/* Eye Comfort Soft Ambient Backgrounds */
+/* Eye Comfort Soft Ambient Animated Backgrounds */
 .eye-comfort-glow {
   background: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.08) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 80%);
+  animation: pulse-subtle 8s ease-in-out infinite alternate;
 }
 
 html.warm .eye-comfort-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.12) 0%, rgba(5, 150, 105, 0.08) 50%, transparent 80%);
+  background: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.14) 0%, rgba(5, 150, 105, 0.08) 50%, transparent 80%);
+  animation: pulse-subtle 8s ease-in-out infinite alternate;
 }
 
-/* Eye Comfort Glassmorphism Cards */
+/* Keyframes for Theme & Dashboard Animations */
+@keyframes ambient-float {
+  0% { transform: translateY(0px) scale(1) rotate(0deg); opacity: 0.4; }
+  50% { transform: translateY(-15px) scale(1.08) rotate(3deg); opacity: 0.7; }
+  100% { transform: translateY(0px) scale(1) rotate(0deg); opacity: 0.4; }
+}
+
+@keyframes pulse-subtle {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.animated-orb {
+  animation: ambient-float 10s ease-in-out infinite alternate;
+}
+
+.animated-orb-delay {
+  animation: ambient-float 14s ease-in-out 2s infinite alternate-reverse;
+}
+
+/* Eye Comfort Glassmorphism Cards with Animated Glow */
 .glass-card {
   background: var(--bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-main);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.glass-card:hover {
-  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+.glass-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.4), rgba(99, 102, 241, 0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+html.warm .glass-card::after {
+  background: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.5), rgba(5, 150, 105, 0.4), transparent);
+}
+
+.glass-card:hover::after {
+  opacity: 1;
 }
 
 html.dark .glass-card {
