@@ -63,22 +63,45 @@ export function Navbar() {
     { label: "Analytics", path: "/analytics", icon: BarChart3 },
   ];
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/85 backdrop-blur-xl transition-colors duration-200 dark:border-zinc-800 dark:bg-[#09090B]/85">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-950 text-white shadow-sm transition-transform duration-200 group-hover:scale-105 dark:bg-white dark:text-zinc-950">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="flex items-center gap-1.5 text-base font-semibold text-zinc-900 dark:text-zinc-50">
-              InterviewAI <span className="rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-xs font-semibold text-blue-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-blue-400">PRO</span>
-            </span>
-          </div>
-        </Link>
+  // Determine page title for desktop header
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case "/dashboard": return "Dashboard";
+      case "/ai-interview": return "AI Interview Studio";
+      case "/coding-challenge": return "Coding Challenge Studio";
+      case "/resume-analyzer": return "ATS Resume Analyzer";
+      case "/interview-history": return "Interview Reports";
+      case "/analytics": return "Performance Analytics";
+      case "/settings": return "Account Settings";
+      default: return "InterviewAI PRO";
+    }
+  };
 
-        {/* Center Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+  return (
+    <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl transition-colors duration-200 dark:border-slate-800 dark:bg-[#0b0f19]/90 warm:border-[#e2d9c8] warm:bg-[#fffdf9]/95">
+      <div className="mx-auto flex h-16 w-full items-center justify-between gap-4 px-4 sm:px-6">
+        {/* Mobile Logo & Desktop Page Title */}
+        <div className="flex items-center gap-3">
+          {/* Logo visible on mobile screens only to avoid overlap with sidebar */}
+          <Link to="/" className="flex items-center gap-2.5 group lg:hidden">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm transition-transform duration-200 group-hover:scale-105 dark:bg-white dark:text-slate-950 warm:bg-[#d97706] warm:text-white">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <span className="flex items-center gap-1 text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">
+              InterviewAI <span className="text-xs font-mono text-amber-600 dark:text-indigo-400 warm:text-amber-700">PRO</span>
+            </span>
+          </Link>
+
+          {/* Page Title visible on desktop screens */}
+          <div className="hidden lg:flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 warm:text-[#736758]">Workspace</span>
+            <span className="text-xs text-slate-300 dark:text-slate-700 warm:text-[#e2d9c8]">&bull;</span>
+            <h1 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">{getPageTitle()}</h1>
+          </div>
+        </div>
+
+        {/* Center Navigation (Visible on tablet, hidden on desktop where Sidebar is active) */}
+        <nav className="hidden md:flex lg:hidden items-center gap-1">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
