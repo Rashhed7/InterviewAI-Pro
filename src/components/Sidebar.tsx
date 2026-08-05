@@ -10,7 +10,6 @@ import {
   Settings as SettingsIcon,
   Sparkles,
   PanelLeftClose,
-  PanelLeftOpen,
   LogOut,
 } from "lucide-react";
 import { authService } from "../services/authService";
@@ -50,27 +49,38 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
       }`}
     >
       {/* Sidebar Header Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-4 dark:border-slate-800 warm:border-[#e2d9c8]">
-        <Link to="/dashboard" className="flex items-center gap-3 min-w-0">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm transition-transform hover:scale-105 dark:bg-white dark:text-slate-950 warm:bg-[#d97706] warm:text-white">
+      <div className={`flex h-16 items-center border-b border-slate-200/80 px-3.5 dark:border-slate-800 warm:border-[#e2d9c8] ${collapsed ? "justify-center" : "justify-between gap-2"}`}>
+        {collapsed ? (
+          <button
+            type="button"
+            onClick={toggleCollapse}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 transition hover:bg-amber-500/20 dark:bg-indigo-500/20 dark:text-indigo-400 warm:bg-amber-600/20 warm:text-amber-800"
+            title="Expand Sidebar"
+          >
             <Sparkles className="h-5 w-5" />
-          </div>
-          {!collapsed && (
-            <span className="truncate text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">
-              InterviewAI <span className="font-mono text-xs text-amber-600 dark:text-indigo-400 warm:text-amber-700">PRO</span>
-            </span>
-          )}
-        </Link>
+          </button>
+        ) : (
+          <>
+            <Link to="/dashboard" className="flex items-center gap-2.5 min-w-0 flex-1">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950 warm:bg-[#d97706] warm:text-white">
+                <Sparkles className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate text-xs font-extrabold tracking-tight text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">
+                InterviewAI <span className="font-mono text-[10px] text-amber-600 dark:text-indigo-400 warm:text-amber-700">PRO</span>
+              </span>
+            </Link>
 
-        <button
-          type="button"
-          onClick={toggleCollapse}
-          className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white warm:text-[#736758] warm:hover:bg-[#eae3d2]"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-        </button>
+            <button
+              type="button"
+              onClick={toggleCollapse}
+              className="shrink-0 rounded-xl p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white warm:text-[#736758] warm:hover:bg-[#eae3d2]"
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Navigation Links */}
