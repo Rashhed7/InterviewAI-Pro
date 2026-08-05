@@ -87,25 +87,9 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 warm:bg-[#f5f0e6] warm:text-[#2c251e] flex font-sans transition-colors duration-300 eye-comfort-glow relative overflow-hidden">
-      {/* Floating Animated Ambient Background Orbs */}
-      <motion.div
-        animate={{
-          scale: [1, 1.25, 1],
-          opacity: [0.35, 0.6, 0.35],
-          x: [0, 20, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -top-20 -left-20 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl dark:bg-indigo-500/15 warm:bg-amber-600/20"
-      />
-      <motion.div
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.3, 0.5, 0.3],
-          y: [0, -30, 0],
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="pointer-events-none absolute top-1/3 -right-20 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl dark:bg-purple-500/15 warm:bg-emerald-600/15"
-      />
+      {/* Stationary Ambient Background Glows (No continuous movement) */}
+      <div className="pointer-events-none absolute -top-20 -left-20 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl dark:bg-indigo-500/15 warm:bg-amber-600/20" />
+      <div className="pointer-events-none absolute top-1/3 -right-20 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl dark:bg-purple-500/15 warm:bg-emerald-600/15" />
 
       <OnboardingModal isOpen={showOnboarding} onComplete={handleOnboardingComplete} />
       <Sidebar />

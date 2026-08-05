@@ -58,15 +58,13 @@
   }
 }
 
-/* Eye Comfort Soft Ambient Animated Backgrounds */
+/* Eye Comfort Soft Ambient Backgrounds (Stationary & Clear) */
 .eye-comfort-glow {
   background: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.08) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 80%);
-  animation: pulse-subtle 8s ease-in-out infinite alternate;
 }
 
 html.warm .eye-comfort-glow {
   background: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.14) 0%, rgba(5, 150, 105, 0.08) 50%, transparent 80%);
-  animation: pulse-subtle 8s ease-in-out infinite alternate;
 }
 
 /* Keyframes for Theme & Dashboard Animations */
