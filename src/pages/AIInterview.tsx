@@ -359,25 +359,26 @@ function AIInterview() {
         {step === "select" && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-xs font-bold mb-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:bg-indigo-500/20 dark:border-indigo-500/30 dark:text-indigo-400 warm:bg-amber-600/20 warm:border-amber-600/30 warm:text-amber-800 rounded-full text-xs font-bold mb-3">
                 <Sparkles className="w-3.5 h-3.5" /> Production-Grade AI Recruiter
               </div>
-              <h1 className="text-3xl font-black text-white tracking-tight">
+              <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 warm:text-[#2c251e] tracking-tight">
                 AI Interview Studio Pro
               </h1>
-              <p className="text-zinc-400 text-sm mt-1">
+              <p className="text-slate-600 dark:text-slate-300 warm:text-[#736758] text-xs leading-relaxed mt-1">
                 Natural recruiter dialogue, dynamic follow-ups, adaptive difficulty escalation, live proctoring anti-cheating, code complexity analysis, and per-question STAR answer rewrites.
               </p>
             </div>
 
             {/* INTERVIEW MODES GRID */}
             <div className="space-y-3">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-zinc-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 warm:text-[#736758]">
                 1. Select Interview Type / Mode:
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {INTERVIEW_MODES.map((mode) => {
                   const Icon = mode.icon;
+                  const isSel = selectedMode === mode.id;
                   return (
                     <div
                       key={mode.id}
@@ -386,18 +387,18 @@ function AIInterview() {
                         if (mode.id !== "Custom Role") setTargetRole(mode.name);
                       }}
                       className={`p-4 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
-                        selectedMode === mode.id
-                          ? "bg-blue-600/20 border-blue-500 shadow-xl shadow-blue-500/10 text-white"
-                          : "bg-[#111113] border-zinc-800 hover:border-zinc-700 text-zinc-300"
+                        isSel
+                          ? "bg-amber-500/20 border-amber-500 shadow-xl dark:bg-indigo-600/20 dark:border-indigo-500 warm:bg-amber-600/20 warm:border-amber-600"
+                          : "glass-card hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <Icon className="w-5 h-5 text-blue-400" />
-                          {selectedMode === mode.id && <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />}
+                          <Icon className="w-5 h-5 text-amber-600 dark:text-indigo-400 warm:text-amber-700" />
+                          {isSel && <span className="w-2.5 h-2.5 rounded-full bg-amber-600 dark:bg-indigo-400 warm:bg-amber-700" />}
                         </div>
-                        <h3 className="text-sm font-bold text-white mb-1">{mode.name}</h3>
-                        <p className="text-[11px] text-zinc-400 leading-relaxed">{mode.description}</p>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] mb-1">{mode.name}</h3>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 warm:text-[#736758] leading-relaxed">{mode.description}</p>
                       </div>
                     </div>
                   );
@@ -406,12 +407,12 @@ function AIInterview() {
             </div>
 
             {/* DYNAMIC COMPANY CATEGORY SELECTION */}
-            <div className="p-6 bg-[#111113] border border-zinc-800 rounded-2xl space-y-4 shadow-xl">
+            <div className="glass-card p-6 rounded-3xl space-y-4">
               <div>
-                <label className="block text-xs font-extrabold uppercase tracking-wider text-zinc-300 flex items-center gap-2 mb-1">
-                  <Building2 className="w-4 h-4 text-blue-400" /> 2. Select Target Company & Industry Sector:
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-slate-100 warm:text-[#2c251e] flex items-center gap-2 mb-1">
+                  <Building2 className="w-4 h-4 text-amber-600 dark:text-indigo-400 warm:text-amber-700" /> 2. Select Target Company & Industry Sector:
                 </label>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-slate-600 dark:text-slate-300 warm:text-[#736758]">
                   Select your target enterprise or enter a custom startup to adapt question styles, system design depth, and evaluation rubrics.
                 </p>
               </div>
@@ -420,7 +421,7 @@ function AIInterview() {
                 <select
                   value={targetCompany}
                   onChange={(e) => setTargetCompany(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-white text-xs font-semibold outline-none focus:border-blue-500"
+                  className="w-full p-3 rounded-xl border border-slate-200/80 bg-white text-slate-900 text-xs font-bold outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e]"
                 >
                   {COMPANY_CATEGORIES.map((cat, idx) => (
                     <optgroup key={idx} label={`-- ${cat.category} --`}>
@@ -433,14 +434,14 @@ function AIInterview() {
                   ))}
                 </select>
 
-                <div className="flex items-center gap-2 text-xs text-zinc-400">
+                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 warm:text-[#736758]">
                   <span>Or enter custom target company:</span>
                   <input
                     type="text"
                     placeholder="e.g. Acme Corp, OpenAI, Anthropic..."
                     value={targetCompany}
                     onChange={(e) => setTargetCompany(e.target.value)}
-                    className="flex-1 p-2 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs font-medium outline-none focus:border-blue-500"
+                    className="flex-1 p-2.5 border border-slate-200/80 bg-white text-slate-900 rounded-xl text-xs font-medium outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e]"
                   />
                 </div>
               </div>
@@ -448,12 +449,12 @@ function AIInterview() {
 
             {/* YEARS EXPERIENCE & VOICE SELECTION */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#111113] border border-zinc-800 rounded-2xl space-y-2">
-                <label className="block text-xs font-bold text-zinc-300">Years of Experience Level:</label>
+              <div className="glass-card p-4 rounded-2xl space-y-2">
+                <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">Years of Experience Level:</label>
                 <select
                   value={yearsExperience}
                   onChange={(e) => setYearsExperience(Number(e.target.value))}
-                  className="w-full p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-white outline-none focus:border-blue-500 font-medium"
+                  className="w-full p-2.5 rounded-xl border border-slate-200/80 bg-white text-slate-900 text-xs font-medium outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e]"
                 >
                   <option value={1}>0 - 2 Years (Entry / Junior)</option>
                   <option value={3}>3 - 5 Years (Mid-Level)</option>
@@ -462,14 +463,16 @@ function AIInterview() {
                 </select>
               </div>
 
-              <div className="p-4 bg-[#111113] border border-zinc-800 rounded-2xl space-y-2">
-                <label className="block text-xs font-bold text-zinc-300">Recruiter AI Voice Persona:</label>
+              <div className="glass-card p-4 rounded-2xl space-y-2">
+                <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">Recruiter AI Voice Persona:</label>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setVoiceGender("female")}
                     className={`flex-1 py-2 rounded-xl text-xs font-bold transition border ${
-                      voiceGender === "female" ? "bg-blue-600/20 text-blue-300 border-blue-500" : "bg-zinc-950 text-zinc-400 border-zinc-800"
+                      voiceGender === "female"
+                        ? "bg-amber-500/20 border-amber-500 text-amber-700 dark:bg-indigo-600/30 dark:text-indigo-300 dark:border-indigo-500 warm:bg-amber-600/20 warm:text-amber-900"
+                        : "glass-card text-slate-600 dark:text-slate-400 warm:text-[#736758]"
                     }`}
                   >
                     Studio Female
@@ -478,7 +481,9 @@ function AIInterview() {
                     type="button"
                     onClick={() => setVoiceGender("male")}
                     className={`flex-1 py-2 rounded-xl text-xs font-bold transition border ${
-                      voiceGender === "male" ? "bg-purple-600/20 text-purple-300 border-purple-500" : "bg-zinc-950 text-zinc-400 border-zinc-800"
+                      voiceGender === "male"
+                        ? "bg-purple-600/20 border-purple-500 text-purple-700 dark:text-purple-300 warm:bg-purple-600/20 warm:text-purple-900"
+                        : "glass-card text-slate-600 dark:text-slate-400 warm:text-[#736758]"
                     }`}
                   >
                     Studio Male
@@ -488,8 +493,8 @@ function AIInterview() {
             </div>
 
             {selectedMode === "Custom Role" && (
-              <div className="p-5 bg-[#111113] border border-zinc-800 rounded-2xl space-y-2">
-                <label className="block text-xs font-bold text-blue-400 uppercase tracking-wider">
+              <div className="glass-card p-5 rounded-2xl space-y-2">
+                <label className="block text-xs font-bold text-amber-600 dark:text-indigo-400 warm:text-amber-700 uppercase tracking-wider">
                   Define Custom Target Role:
                 </label>
                 <input
@@ -497,18 +502,18 @@ function AIInterview() {
                   placeholder="e.g. Principal Cloud Security Engineer, Senior iOS Developer..."
                   value={customRoleInput}
                   onChange={(e) => setCustomRoleInput(e.target.value)}
-                  className="w-full p-3.5 rounded-xl bg-zinc-950 text-white outline-none border border-zinc-800 focus:border-blue-500 text-xs font-medium"
+                  className="w-full p-3.5 rounded-xl border border-slate-200/80 bg-white text-slate-900 outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e] text-xs font-medium"
                 />
               </div>
             )}
 
             {/* RESUME UPLOAD SECTION */}
-            <div className="p-6 bg-[#111113] border border-zinc-800 rounded-2xl space-y-4 shadow-xl">
+            <div className="glass-card p-6 rounded-3xl space-y-4">
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-purple-400" /> Candidate Resume Context (Optional)
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Candidate Resume Context (Optional)
                 </h3>
-                <p className="text-xs text-zinc-400 mt-1">
+                <p className="text-xs text-slate-600 dark:text-slate-300 warm:text-[#736758] mt-1">
                   Upload your resume or paste resume text to instruct the AI Recruiter to ask targeted questions about your actual projects & experience.
                 </p>
               </div>

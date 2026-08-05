@@ -50,21 +50,21 @@ function InterviewHistory() {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <h3 className="font-bold text-white text-base">{session.title}</h3>
-                    <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2.5 py-0.5 rounded font-semibold">
+                    <h3 className="font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] text-base">{session.title}</h3>
+                    <span className="text-[10px] bg-amber-500/10 text-amber-600 border border-amber-500/30 dark:bg-indigo-500/20 dark:text-indigo-400 warm:bg-amber-600/20 warm:text-amber-800 px-2.5 py-0.5 rounded font-bold">
                       {session.difficulty}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">{session.feedback}</p>
-                  <p className="text-[11px] text-gray-500 pt-1">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 warm:text-[#736758] leading-relaxed">{session.feedback}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 warm:text-[#736758] pt-1">
                     Completed on {new Date(session.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0">
-                  <div className="text-center px-4 py-2 bg-slate-950/80 rounded-xl border border-slate-800">
-                    <span className="block text-[10px] text-gray-400 uppercase font-semibold">Score</span>
-                    <span className="text-2xl font-extrabold text-emerald-400">{session.score}%</span>
+                  <div className="text-center px-4 py-2 bg-slate-100 dark:bg-slate-900 warm:bg-[#eae3d2] rounded-xl border border-slate-200/80 dark:border-slate-800 warm:border-[#e2d9c8]">
+                    <span className="block text-[10px] text-slate-500 dark:text-slate-400 warm:text-[#736758] uppercase font-bold">Score</span>
+                    <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 warm:text-emerald-700">{session.score}%</span>
                   </div>
                 </div>
               </div>

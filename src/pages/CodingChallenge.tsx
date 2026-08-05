@@ -641,20 +641,20 @@ function CodingChallenge() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-1">
-                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider block">Time Complexity</span>
-                <p className="text-sm font-mono text-white font-bold">{codingAnalysis.timeComplexity}</p>
+              <div className="glass-card p-4 rounded-2xl space-y-1">
+                <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block">Time Complexity</span>
+                <p className="text-sm font-mono text-slate-900 dark:text-white warm:text-[#2c251e] font-bold">{codingAnalysis.timeComplexity}</p>
               </div>
 
-              <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-1">
-                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Space Complexity</span>
-                <p className="text-sm font-mono text-white font-bold">{codingAnalysis.spaceComplexity}</p>
+              <div className="glass-card p-4 rounded-2xl space-y-1">
+                <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block">Space Complexity</span>
+                <p className="text-sm font-mono text-slate-900 dark:text-white warm:text-[#2c251e] font-bold">{codingAnalysis.spaceComplexity}</p>
               </div>
             </div>
 
-            <div className="p-5 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-2">
-              <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider block">Production Code Implementation</span>
-              <pre className="p-3 bg-zinc-900 rounded-xl text-emerald-200 font-mono text-xs overflow-x-auto">
+            <div className="glass-card p-5 rounded-2xl space-y-2">
+              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">Production Code Implementation</span>
+              <pre className="p-3 bg-slate-900 text-emerald-300 dark:bg-zinc-950 dark:text-emerald-200 warm:bg-[#2c251e] warm:text-emerald-200 rounded-xl font-mono text-xs overflow-x-auto">
                 {codingAnalysis.optimalSolution}
               </pre>
             </div>

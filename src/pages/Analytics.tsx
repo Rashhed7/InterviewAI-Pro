@@ -63,48 +63,48 @@ function Analytics() {
           </div>
         </div>
 
-        <div className="bg-[#111113] border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4">
-          <h3 className="font-bold text-white text-sm flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-blue-400" /> Technical Skill Breakdown
+        <div className="glass-card rounded-3xl p-6 space-y-4">
+          <h3 className="font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] text-sm flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-amber-600 dark:text-indigo-400 warm:text-amber-700" /> Technical Skill Breakdown
           </h3>
           <div className="space-y-4 text-xs">
             <div>
-              <div className="flex justify-between text-zinc-300 font-medium mb-1.5">
+              <div className="flex justify-between text-slate-700 dark:text-slate-300 warm:text-[#2c251e] font-semibold mb-1.5">
                 <span>React & Frontend Engineering</span>
-                <span className="font-mono">88%</span>
+                <span className="font-mono font-bold">88%</span>
               </div>
-              <div className="w-full bg-zinc-900 rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full w-[88%]" />
+              <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] rounded-full h-2">
+                <div className="bg-blue-600 dark:bg-blue-500 warm:bg-blue-700 h-2 rounded-full w-[88%]" />
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between text-zinc-300 font-medium mb-1.5">
+              <div className="flex justify-between text-slate-700 dark:text-slate-300 warm:text-[#2c251e] font-semibold mb-1.5">
                 <span>Node.js & Backend Architecture</span>
-                <span className="font-mono">82%</span>
+                <span className="font-mono font-bold">82%</span>
               </div>
-              <div className="w-full bg-zinc-900 rounded-full h-2">
-                <div className="bg-emerald-500 h-2 rounded-full w-[82%]" />
+              <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] rounded-full h-2">
+                <div className="bg-emerald-600 dark:bg-emerald-500 warm:bg-emerald-700 h-2 rounded-full w-[82%]" />
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between text-zinc-300 font-medium mb-1.5">
+              <div className="flex justify-between text-slate-700 dark:text-slate-300 warm:text-[#2c251e] font-semibold mb-1.5">
                 <span>Data Structures & Algorithms</span>
-                <span className="font-mono">74%</span>
+                <span className="font-mono font-bold">74%</span>
               </div>
-              <div className="w-full bg-zinc-900 rounded-full h-2">
-                <div className="bg-amber-500 h-2 rounded-full w-[74%]" />
+              <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] rounded-full h-2">
+                <div className="bg-amber-600 dark:bg-amber-500 warm:bg-amber-700 h-2 rounded-full w-[74%]" />
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between text-zinc-300 font-medium mb-1.5">
+              <div className="flex justify-between text-slate-700 dark:text-slate-300 warm:text-[#2c251e] font-semibold mb-1.5">
                 <span>System Design & Cloud Scaling</span>
-                <span className="font-mono">68%</span>
+                <span className="font-mono font-bold">68%</span>
               </div>
-              <div className="w-full bg-zinc-900 rounded-full h-2">
-                <div className="bg-purple-500 h-2 rounded-full w-[68%]" />
+              <div className="w-full bg-slate-200 dark:bg-slate-800 warm:bg-[#e2d9c8] rounded-full h-2">
+                <div className="bg-purple-600 dark:bg-purple-500 warm:bg-purple-700 h-2 rounded-full w-[68%]" />
               </div>
             </div>
           </div>
