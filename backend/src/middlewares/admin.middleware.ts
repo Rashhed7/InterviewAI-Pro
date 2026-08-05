@@ -1,7 +1,10 @@
 import { Response, NextFunction } from "express";
+import { PrismaClient } from "@prisma/client";
 import { AuthRequest } from "./auth.middleware";
 
-export const requireAdmin = (
+const prisma = new PrismaClient();
+
+export const requireAdmin = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
@@ -16,8 +19,23 @@ export const requireAdmin = (
       });
     }
 
-    // Check if user role is ADMIN (or email matches admin credential)
-    const isAdminRole = user.role === "ADMIN" || user.email === "admin@interviewai.pro" || user.email === "admin@gmail.com";
+    // Query database directly to get the updated role
+    const userId = user.userId || user.id;
+    let role = user.role;
+
+    if (userId) {
+      const dbUser = await prisma.user.findUnique({ where: { id: userId } }).catch(() => null);
+      if (dbUser) {
+        role = dbUser.role;
+      }
+    }
+
+    // Check if user role is ADMIN (case-insensitive) or matches admin email
+    const roleUpper = (role || "").toString().toUpperCase();
+    const isAdminRole =
+      roleUpper === "ADMIN" ||
+      user.email === "admin@interviewai.pro" ||
+      user.email === "admin@gmail.com";
 
     if (!isAdminRole) {
       return res.status(403).json({

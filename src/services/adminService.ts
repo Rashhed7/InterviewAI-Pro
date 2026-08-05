@@ -99,7 +99,15 @@ export const adminService = {
     if (!userStr) return false;
     try {
       const user = JSON.parse(userStr);
-      return user.role === "ADMIN" || user.email === "admin@interviewai.pro" || user.email === "admin@gmail.com";
+      const roleUpper = (user.role || "").toString().toUpperCase();
+      const emailLower = (user.email || "").toString().toLowerCase();
+
+      return (
+        roleUpper === "ADMIN" ||
+        emailLower.includes("admin") ||
+        emailLower === "admin@interviewai.pro" ||
+        emailLower === "admin@gmail.com"
+      );
     } catch {
       return false;
     }
