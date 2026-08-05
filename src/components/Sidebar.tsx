@@ -48,8 +48,14 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
         collapsed ? "w-20" : "w-64"
       }`}
     >
-      {/* Sidebar Header Toggle (Logo removed per user preference) */}
-      <div className={`flex h-16 items-center border-b border-slate-200/80 px-3.5 dark:border-slate-800 warm:border-[#e2d9c8] ${collapsed ? "justify-center" : "justify-end"}`}>
+      {/* Sidebar Header with Menu Label */}
+      <div className={`flex h-16 items-center border-b border-slate-200/80 px-4 dark:border-slate-800 warm:border-[#e2d9c8] ${collapsed ? "justify-center" : "justify-between"}`}>
+        {!collapsed && (
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 warm:text-[#736758]">
+            Menu
+          </span>
+        )}
+
         <button
           type="button"
           onClick={toggleCollapse}
