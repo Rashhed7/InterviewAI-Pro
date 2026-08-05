@@ -17,18 +17,25 @@ import Leaderboard from "./pages/Leaderboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import { PageTransition } from "./components/layout/PageTransition";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <PageTransition>
+        <App />
+      </PageTransition>
+    ),
   },
 
   {
     path: "/login",
     element: (
       <PublicRoute>
-        <Login />
+        <PageTransition>
+          <Login />
+        </PageTransition>
       </PublicRoute>
     ),
   },
@@ -37,21 +44,29 @@ const router = createBrowserRouter([
     path: "/register",
     element: (
       <PublicRoute>
-        <Register />
+        <PageTransition>
+          <Register />
+        </PageTransition>
       </PublicRoute>
     ),
   },
 
   {
     path: "/verify-email",
-    element: <VerifyEmail />,
+    element: (
+      <PageTransition>
+        <VerifyEmail />
+      </PageTransition>
+    ),
   },
 
   {
     path: "/forgot-password",
     element: (
       <PublicRoute>
-        <ForgotPassword />
+        <PageTransition>
+          <ForgotPassword />
+        </PageTransition>
       </PublicRoute>
     ),
   },
@@ -60,7 +75,9 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <ProtectedRoute>
-        <Dashboard />
+        <PageTransition>
+          <Dashboard />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -69,7 +86,9 @@ const router = createBrowserRouter([
     path: "/ai-interview",
     element: (
       <ProtectedRoute>
-        <AIInterview />
+        <PageTransition>
+          <AIInterview />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -78,7 +97,9 @@ const router = createBrowserRouter([
     path: "/coding-challenge",
     element: (
       <ProtectedRoute>
-        <CodingChallenge />
+        <PageTransition>
+          <CodingChallenge />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -87,7 +108,9 @@ const router = createBrowserRouter([
     path: "/resume-analyzer",
     element: (
       <ProtectedRoute>
-        <ResumeAnalyzer />
+        <PageTransition>
+          <ResumeAnalyzer />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -96,7 +119,9 @@ const router = createBrowserRouter([
     path: "/interview-history",
     element: (
       <ProtectedRoute>
-        <InterviewHistory />
+        <PageTransition>
+          <InterviewHistory />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -105,7 +130,9 @@ const router = createBrowserRouter([
     path: "/analytics",
     element: (
       <ProtectedRoute>
-        <Analytics />
+        <PageTransition>
+          <Analytics />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -114,7 +141,9 @@ const router = createBrowserRouter([
     path: "/leaderboard",
     element: (
       <ProtectedRoute>
-        <Leaderboard />
+        <PageTransition>
+          <Leaderboard />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -123,7 +152,9 @@ const router = createBrowserRouter([
     path: "/profile",
     element: (
       <ProtectedRoute>
-        <Profile />
+        <PageTransition>
+          <Profile />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -132,7 +163,9 @@ const router = createBrowserRouter([
     path: "/settings",
     element: (
       <ProtectedRoute>
-        <Settings />
+        <PageTransition>
+          <Settings />
+        </PageTransition>
       </ProtectedRoute>
     ),
   },
@@ -140,9 +173,11 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white text-2xl">
-        404 | Page Not Found
-      </div>
+      <PageTransition>
+        <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white text-2xl font-bold">
+          404 | Page Not Found
+        </div>
+      </PageTransition>
     ),
   },
 ]);
