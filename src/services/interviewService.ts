@@ -317,6 +317,17 @@ export const interviewService = {
     });
   },
 
+  async updateUserMemory(data: {
+    targetRole?: string;
+    targetCompany?: string;
+    resumeText?: string;
+  }): Promise<{ success: boolean; memory?: UserAIMemory }> {
+    return await apiRequest<{ success: boolean; memory?: UserAIMemory }>("/interviews/user-memory", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }).catch(() => ({ success: false }));
+  },
+
   async saveSession(data: {
     sessionId: string;
     report: FinalReportResponse;

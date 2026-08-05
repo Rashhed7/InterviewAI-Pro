@@ -1,15 +1,35 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Moon, Sun, Laptop, Bell, Globe, Shield, Trash2, Check } from "lucide-react";
+import { Moon, Sun, Laptop, Bell, Globe, Shield, Trash2, Check, Target, Briefcase, Building2, Award, FileText, Save } from "lucide-react";
 import { authService, type UserProfile } from "../services/authService";
+import { interviewService } from "../services/interviewService";
 import { useTheme } from "../context/ThemeContext";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+
+const QUICK_ROLES = [
+  "Full Stack Engineer",
+  "Frontend React Developer",
+  "Backend Node.js Engineer",
+  "AI & Machine Learning Engineer",
+  "Cloud & DevOps Architect",
+  "System Design Specialist",
+];
+
+const QUICK_COMPANIES = ["Stripe", "Google", "Meta", "Amazon", "Microsoft", "Fast-growing Startup"];
 
 function Settings() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfile | null>(null);
   const { theme, setTheme: handleThemeChange } = useTheme();
+
+  // Candidate Interview Preferences State
+  const [targetRole, setTargetRole] = useState("Full Stack Engineer");
+  const [targetCompany, setTargetCompany] = useState("Stripe");
+  const [experienceLevel, setExperienceLevel] = useState("Mid-level (2-5 yrs)");
+  const [resumeText, setResumeText] = useState("");
+  const [prefSavedMsg, setPrefSavedMsg] = useState<string | null>(null);
+  const [prefLoading, setPrefLoading] = useState(false);
 
   // Notification Settings State
   const [emailNotifs, setEmailNotifs] = useState(true);
@@ -35,6 +55,25 @@ function Settings() {
     }
     setUser(currentUser);
 
+    // Load candidate interview preferences
+    const savedPrefs = localStorage.getItem("onboardingPreferences");
+    if (savedPrefs) {
+      try {
+        const parsed = JSON.parse(savedPrefs);
+        if (parsed.targetRole) setTargetRole(parsed.targetRole);
+        if (parsed.targetCompany) setTargetCompany(parsed.targetCompany);
+        if (parsed.experienceLevel) setExperienceLevel(parsed.experienceLevel);
+        if (parsed.resumeText) setResumeText(parsed.resumeText);
+      } catch (e) {}
+    } else {
+      interviewService.getUserMemory().then((res) => {
+        if (res?.memory) {
+          if (res.memory.targetRole) setTargetRole(res.memory.targetRole);
+          if (res.memory.targetCompany) setTargetCompany(res.memory.targetCompany);
+        }
+      }).catch(() => {});
+    }
+
     const savedNotifs = localStorage.getItem("appNotifications");
     if (savedNotifs) {
       try {
@@ -48,6 +87,26 @@ function Settings() {
     const savedLang = localStorage.getItem("appLanguage") || "en-US";
     setLanguage(savedLang);
   }, [navigate]);
+
+  const handleSavePreferences = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPrefLoading(true);
+    const prefs = { targetRole, targetCompany, experienceLevel, resumeText };
+    localStorage.setItem("onboardingPreferences", JSON.stringify(prefs));
+    localStorage.setItem("hasCompletedOnboarding", "true");
+
+    try {
+      await interviewService.updateUserMemory({
+        targetRole,
+        targetCompany,
+        resumeText,
+      });
+    } catch (err) {}
+
+    setPrefLoading(false);
+    setPrefSavedMsg("Interview & role preferences saved successfully!");
+    setTimeout(() => setPrefSavedMsg(null), 3000);
+  };
 
   const handleSaveNotifications = (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,11 +155,139 @@ function Settings() {
           <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl dark:bg-indigo-500/10 warm:bg-amber-600/15" />
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] tracking-tight">Account & Studio Settings</h1>
           <p className="text-slate-600 dark:text-slate-300 warm:text-[#736758] text-xs leading-6 mt-1">
-            Customize visual theme, notification alerts, language preferences, and security settings.
+            Customize target role preferences, visual theme, notification alerts, language, and security.
           </p>
         </div>
 
-        {/* SECTION 1: THEME CUSTOMIZATION */}
+        {/* SECTION 1: INTERVIEW & ROLE PREFERENCES */}
+        <section className="glass-card rounded-3xl p-6 space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 warm:border-[#e2d9c8] pb-3">
+            <div>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] flex items-center gap-2">
+                <Target className="w-4 h-4 text-amber-600 dark:text-indigo-400 warm:text-amber-700" /> Target Role & Interview Preferences
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-300 warm:text-[#736758] mt-0.5">
+                Update the target job title, target company, and experience level used to tailor your mock interviews and Dashboard.
+              </p>
+            </div>
+            {prefSavedMsg && (
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 warm:text-emerald-800 text-xs font-semibold rounded-xl animate-in fade-in">
+                <Check className="w-3.5 h-3.5" /> {prefSavedMsg}
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleSavePreferences} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Target Role */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                  <Briefcase className="w-3.5 h-3.5 text-amber-600 dark:text-indigo-400" /> Target Job Title / Role
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  placeholder="e.g. Full Stack Engineer"
+                  className="w-full p-3 rounded-xl border border-slate-200/80 bg-white text-slate-900 text-xs font-medium outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e]"
+                />
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {QUICK_ROLES.slice(0, 4).map((role) => (
+                    <button
+                      key={role}
+                      type="button"
+                      onClick={() => setTargetRole(role)}
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-lg border transition ${
+                        targetRole === role
+                          ? "bg-amber-500/20 border-amber-500/40 text-amber-700 dark:bg-indigo-500/20 dark:border-indigo-500/40 dark:text-indigo-300 warm:bg-amber-600/20 warm:border-amber-600/40 warm:text-amber-900 font-bold"
+                          : "border-slate-200 bg-slate-100/50 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 warm:border-[#e2d9c8] warm:bg-[#eae3d2]/60 warm:text-[#736758]"
+                      }`}
+                    >
+                      {role}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Target Company */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-amber-600 dark:text-indigo-400" /> Target Company
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={targetCompany}
+                  onChange={(e) => setTargetCompany(e.target.value)}
+                  placeholder="e.g. Stripe, Google, Meta"
+                  className="w-full p-3 rounded-xl border border-slate-200/80 bg-white text-slate-900 text-xs font-medium outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e]"
+                />
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {QUICK_COMPANIES.slice(0, 4).map((company) => (
+                    <button
+                      key={company}
+                      type="button"
+                      onClick={() => setTargetCompany(company)}
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-lg border transition ${
+                        targetCompany === company
+                          ? "bg-amber-500/20 border-amber-500/40 text-amber-700 dark:bg-indigo-500/20 dark:border-indigo-500/40 dark:text-indigo-300 warm:bg-amber-600/20 warm:border-amber-600/40 warm:text-amber-900 font-bold"
+                          : "border-slate-200 bg-slate-100/50 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 warm:border-[#e2d9c8] warm:bg-[#eae3d2]/60 warm:text-[#736758]"
+                      }`}
+                    >
+                      {company}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Experience Level & Bio Text */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                  <Award className="w-3.5 h-3.5 text-amber-600 dark:text-indigo-400" /> Experience Tier
+                </label>
+                <select
+                  value={experienceLevel}
+                  onChange={(e) => setExperienceLevel(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200/80 bg-white text-slate-900 text-xs font-medium outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e]"
+                >
+                  <option value="Entry-level (0-2 yrs)">Entry-level (0-2 yrs)</option>
+                  <option value="Mid-level (2-5 yrs)">Mid-level (2-5 yrs)</option>
+                  <option value="Senior (5-8 yrs)">Senior (5-8 yrs)</option>
+                  <option value="Staff / Principal (8+ yrs)">Staff / Lead (8+ yrs)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 warm:text-[#2c251e] flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-amber-600 dark:text-indigo-400" /> Resume / Background Bio
+                </label>
+                <textarea
+                  rows={2}
+                  value={resumeText}
+                  onChange={(e) => setResumeText(e.target.value)}
+                  placeholder="Paste your resume highlights or tech stack summary..."
+                  className="w-full p-3 rounded-xl border border-slate-200/80 bg-white text-slate-900 text-xs font-medium outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#fffdf9] warm:text-[#2c251e] custom-scrollbar"
+                />
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                disabled={prefLoading}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-md shadow-slate-900/10 transition hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 warm:bg-[#d97706] warm:hover:bg-[#b45309]"
+              >
+                <Save className="w-3.5 h-3.5" />
+                {prefLoading ? "Saving Preferences..." : "Save Candidate Preferences"}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        {/* SECTION 2: THEME CUSTOMIZATION */}
         <section className="glass-card rounded-3xl p-6 space-y-4">
           <div className="space-y-1 border-b border-slate-200/80 dark:border-slate-800 warm:border-[#e2d9c8] pb-3">
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e] flex items-center gap-2">
