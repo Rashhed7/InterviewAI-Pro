@@ -15,6 +15,8 @@ import {
   Video,
   Code2,
   FileText,
+  History,
+  BarChart3,
   Settings as SettingsIcon,
   ShieldCheck,
 } from "lucide-react";
@@ -57,6 +59,8 @@ export function Navbar() {
     { label: "AI Interview", path: "/ai-interview", icon: Video },
     { label: "Coding Studio", path: "/coding-challenge", icon: Code2 },
     { label: "Resume Analyzer", path: "/resume-analyzer", icon: FileText },
+    { label: "Reports", path: "/interview-history", icon: History },
+    { label: "Analytics", path: "/analytics", icon: BarChart3 },
   ];
 
   return (
