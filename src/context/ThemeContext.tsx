@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "dark" | "light" | "system";
-export type EffectiveTheme = "dark" | "light";
+export type Theme = "dark" | "warm" | "light" | "system";
+export type EffectiveTheme = "dark" | "warm" | "light";
 
 interface ThemeContextType {
   theme: Theme;
@@ -16,7 +16,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("appTheme") as Theme;
-      if (saved && ["dark", "light", "system"].includes(saved)) {
+      if (saved && ["dark", "warm", "light", "system"].includes(saved)) {
         return saved;
       }
     }
@@ -34,9 +34,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const applyTheme = (mode: EffectiveTheme) => {
     const root = document.documentElement;
-    root.classList.remove("light", "dark");
+    root.classList.remove("light", "dark", "warm");
     root.classList.add(mode);
-    root.style.colorScheme = mode;
+    root.setAttribute("data-theme", mode);
+    root.style.colorScheme = mode === "light" || mode === "warm" ? "light" : "dark";
   };
 
   useEffect(() => {
@@ -44,7 +45,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem("appTheme", theme);
   }, [theme, effectiveTheme]);
 
-  // Listen for system theme changes when in 'system' mode
   useEffect(() => {
     if (theme !== "system") return;
 
@@ -62,7 +62,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleTheme = () => {
-    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
+    setThemeState((prev) => {
+      if (prev === "dark") return "warm";
+      if (prev === "warm") return "light";
+      return "dark";
+    });
   };
 
   return (
@@ -79,3 +83,4 @@ export const useTheme = (): ThemeContextType => {
   }
   return context;
 };
+

@@ -5,6 +5,7 @@ import {
   Sparkles,
   Sun,
   Moon,
+  Eye,
   Bell,
   LogOut,
   ChevronDown,
@@ -59,16 +60,15 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-[#09090B]/80 backdrop-blur-md transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo */}
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/85 backdrop-blur-xl transition-colors duration-200 dark:border-zinc-800 dark:bg-[#09090B]/85">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 dark:bg-blue-500 text-white flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
-            <Sparkles className="w-5 h-5" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-950 text-white shadow-sm transition-transform duration-200 group-hover:scale-105 dark:bg-white dark:text-zinc-950">
+            <Sparkles className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-base tracking-tight text-zinc-900 dark:text-zinc-50 flex items-center gap-1.5">
-              InterviewAI <span className="text-blue-600 dark:text-blue-500 font-semibold text-xs px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/50">PRO</span>
+            <span className="flex items-center gap-1.5 text-base font-semibold text-zinc-900 dark:text-zinc-50">
+              InterviewAI <span className="rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-xs font-semibold text-blue-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-blue-400">PRO</span>
             </span>
           </div>
         </Link>
@@ -82,10 +82,10 @@ export function Navbar() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all duration-150 ${
+                className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all duration-150 ${
                   isActive
-                    ? "bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-zinc-50 font-bold"
-                    : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                    ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800/80 dark:text-zinc-50"
+                    : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? "text-blue-600 dark:text-blue-500" : ""}`} />
@@ -101,10 +101,31 @@ export function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-            title={effectiveTheme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-50/80 px-2.5 py-1.5 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 warm:border-[#e2d9c8] warm:bg-[#eae3d2]/80 warm:text-[#2c251e] warm:hover:bg-[#dfd7c4]"
+            title={
+              effectiveTheme === "dark"
+                ? "Switch to Eye Comfort Warm Mode"
+                : effectiveTheme === "warm"
+                ? "Switch to Light Mode"
+                : "Switch to Dark Mode"
+            }
           >
-            {effectiveTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {effectiveTheme === "dark" ? (
+              <>
+                <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="hidden sm:inline text-[11px]">Dark</span>
+              </>
+            ) : effectiveTheme === "warm" ? (
+              <>
+                <Eye className="w-3.5 h-3.5 text-amber-600" />
+                <span className="hidden sm:inline text-[11px] text-amber-700 font-bold">Eye Comfort</span>
+              </>
+            ) : (
+              <>
+                <Sun className="w-3.5 h-3.5 text-amber-500" />
+                <span className="hidden sm:inline text-[11px]">Light</span>
+              </>
+            )}
           </button>
 
           {currentUser ? (
@@ -206,15 +227,16 @@ export function Navbar() {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
+                className="hidden rounded-lg px-4 py-2 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-zinc-100 sm:inline-flex"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white shadow-md shadow-blue-500/20 transition"
+                className="rounded-lg bg-zinc-950 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 sm:px-4"
               >
-                Get Started
+                <span className="sm:hidden">Start</span>
+                <span className="hidden sm:inline">Get Started</span>
               </Link>
             </div>
           )}
@@ -223,7 +245,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMenuBarOpen(!menuBarOpen)}
-            className="md:hidden p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
+            className="rounded-lg border border-zinc-200 p-2 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400 md:hidden"
           >
             {menuBarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>

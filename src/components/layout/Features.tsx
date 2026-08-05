@@ -1,73 +1,70 @@
 import { motion } from "framer-motion";
-import { Brain, Mic, Code2, FileCheck, ShieldCheck, BarChart3 } from "lucide-react";
+import { BarChart3, Brain, Code2, FileCheck, Mic2, ShieldCheck } from "lucide-react";
 
 const FEATURES = [
   {
     icon: Brain,
-    title: "Dynamic AI Recruiter",
-    description: "No hardcoded question arrays. Evaluates candidate terms in real-time to generate natural follow-ups and adapt difficulty.",
+    title: "Adaptive interviews",
+    description: "Role-based question flow with natural follow-ups, difficulty changes, and focused evaluation after each session.",
   },
   {
-    icon: Mic,
-    title: "Acoustic Noise-Filtered Voice Mode",
-    description: "Studio Neural voice synthesis with real-time Web Speech transcription, decibel level monitoring, and auto-punctuation.",
+    icon: Mic2,
+    title: "Voice practice",
+    description: "Speak answers out loud, track pacing, and build confidence for remote and on-site interview formats.",
   },
   {
     icon: Code2,
-    title: "Coding Challenge Sandbox",
-    description: "Real-time algorithm problem solver with Big-O time & space complexity estimation, edge-case testing, and code quality scoring.",
+    title: "Coding workspace",
+    description: "Practice algorithms with complexity notes, edge-case thinking, and review prompts that mirror real interviews.",
   },
   {
     icon: FileCheck,
-    title: "ATS Resume & Metric Rewriter",
-    description: "Scan your resume for ATS score breakdowns, keyword optimization, and metric-driven bullet point rewrites.",
+    title: "Resume review",
+    description: "Improve role alignment, keyword coverage, weak bullets, and measurable impact before applying.",
   },
   {
     icon: ShieldCheck,
-    title: "Anti-Cheating Proctoring Audit",
-    description: "Real-time browser tab-switch detection, window blur alerts, copy-paste monitors, and integrity reports.",
+    title: "Session integrity",
+    description: "Keep practice sessions realistic with focus checks, interruption awareness, and clean post-session notes.",
   },
   {
     icon: BarChart3,
-    title: "Executive STAR Report & Roadmap",
-    description: "Per-question gold standard STAR answers, candidate response rewrites, and personalized daily practice roadmaps.",
+    title: "Progress analytics",
+    description: "See where answers are improving across clarity, structure, technical depth, and communication quality.",
   },
 ];
 
 function Features() {
   return (
-    <section id="features" className="py-20 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
-          <h2 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
-            Everything Required for Technical Interview Success
+    <section id="features" className="border-y border-slate-200/80 bg-slate-50/50 py-20 dark:border-slate-800 dark:bg-slate-900/40 warm:border-[#e2d9c8] warm:bg-[#eae3d2]/30">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-indigo-400 warm:text-amber-700">What you get</p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-100 warm:text-[#2c251e]">
+            A focused prep desk for every stage before the interview.
           </h2>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm max-w-2xl mx-auto">
-            Built for software engineers, product managers, and technical candidates targeting top-tier tech roles.
+          <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300 warm:text-[#736758]">
+            The product keeps the workflow practical: practice, review, adjust, and repeat with zero noise.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {FEATURES.map((feat, idx) => {
-            const Icon = feat.icon;
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((feature, index) => {
+            const Icon = feature.icon;
             return (
               <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 16 }}
+                key={feature.title}
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.08 }}
-                className="p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#111113] hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all duration-200 group shadow-lg hover:shadow-xl"
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.35, delay: index * 0.04 }}
+                className="glass-card rounded-2xl p-6 transition-all hover:-translate-y-1"
               >
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Icon className="w-6 h-6" />
+                <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200/80 bg-slate-100/70 text-slate-900 dark:border-slate-700/80 dark:bg-slate-800/70 dark:text-slate-100 warm:border-[#e2d9c8] warm:bg-[#eae3d2]/80 warm:text-[#2c251e]">
+                  <Icon className="h-5 w-5 text-amber-600 dark:text-indigo-400 warm:text-amber-700" />
                 </div>
-                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-                  {feat.title}
-                </h3>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  {feat.description}
-                </p>
+                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300 warm:text-[#736758]">{feature.description}</p>
               </motion.div>
             );
           })}

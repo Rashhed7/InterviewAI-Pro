@@ -1,71 +1,65 @@
 import { motion } from "framer-motion";
-import { FileUp, Cpu, Video } from "lucide-react";
+import { FileUp, MessageSquareText, Target } from "lucide-react";
 
 const STEPS = [
   {
     step: "01",
     icon: FileUp,
-    title: "Select Role & Attach Resume",
-    description: "Choose your target role (Full Stack, Backend, System Design, HR) and optionally upload your resume to contextualize questions.",
+    title: "Set the target",
+    description: "Choose a role, experience level, topic, and optional resume context so the session starts with the right expectations.",
   },
   {
     step: "02",
-    icon: Video,
-    title: "1-on-1 Voice AI Interview Room",
-    description: "Engage in continuous voice dialogue with the AI recruiter. Answer technical questions, write code solutions, and respond to follow-ups.",
+    icon: MessageSquareText,
+    title: "Practice like it is live",
+    description: "Answer with voice or text, solve coding prompts, and handle follow-ups in a focused interview room.",
   },
   {
     step: "03",
-    icon: Cpu,
-    title: "Per-Question Executive Report & Roadmap",
-    description: "Receive 15+ sub-scores, proctoring logs, gold-standard STAR answers, winning answer rewrites, and a step-by-step learning plan.",
+    icon: Target,
+    title: "Review the next move",
+    description: "Use the report to understand weak spots, rewrite stronger answers, and decide what to practice next.",
   },
 ];
 
 function HowItWorks() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-zinc-200 dark:border-zinc-800/80">
-      <div className="text-center space-y-3 mb-16">
-        <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-          Workflow
-        </span>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight">
-          Three Steps to Hiring Confidence
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 text-sm max-w-xl mx-auto">
-          Automated end-to-end interview simulation engineered for maximum candidate growth.
-        </p>
-      </div>
+    <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+        <div className="lg:sticky lg:top-24">
+          <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">Workflow</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl dark:text-white">
+            Simple enough to use every day.
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+            Each session has a clear beginning, a realistic practice loop, and a report that turns feedback into action.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {STEPS.map((step, idx) => {
-          const Icon = step.icon;
-          return (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.1 }}
-              className="p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#111113] relative space-y-4 shadow-lg"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                  <Icon className="w-6 h-6" />
+        <div className="space-y-4">
+          {STEPS.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, x: 18 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.35, delay: index * 0.06 }}
+                className="grid gap-5 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-950 sm:grid-cols-[auto_1fr_auto] sm:items-center"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
+                  <Icon className="h-5 w-5" />
                 </div>
-                <span className="font-mono font-bold text-2xl text-zinc-300 dark:text-zinc-700">
-                  {step.step}
-                </span>
-              </div>
-              <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                {step.title}
-              </h3>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                {step.description}
-              </p>
-            </motion.div>
-          );
-        })}
+                <div>
+                  <h3 className="text-base font-semibold text-zinc-950 dark:text-white">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">{step.description}</p>
+                </div>
+                <span className="font-mono text-3xl font-semibold text-zinc-200 dark:text-zinc-800">{step.step}</span>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
