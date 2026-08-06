@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:backend": "cd backend && npm install && npm run build",
+    "start": "cd backend && npm run start",
     "lint": "oxlint",
     "preview": "vite preview"
   },

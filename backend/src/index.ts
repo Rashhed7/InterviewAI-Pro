@@ -37,7 +37,7 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 5000;
 app.use("/api/auth", authRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/interviews", interviewRoutes);
@@ -45,8 +45,8 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/admin", adminRoutes);
 
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, "0.0.0.0", async () => {
+  console.log(`🚀 Server running on port ${PORT} (bound to 0.0.0.0)`);
   try {
     await prisma.$connect();
     console.log("✅ Neon PostgreSQL Database connected successfully!");
