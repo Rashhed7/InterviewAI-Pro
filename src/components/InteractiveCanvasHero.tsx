@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform } from "framer-motion";
 import { getFrameUrl, TOTAL_FRAMES, type HeroFeature } from "../data/landing";
 import { Loader2, Play, Pause, RotateCcw } from "lucide-react";
 

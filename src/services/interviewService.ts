@@ -1,4 +1,5 @@
 import { apiRequest } from "./api";
+import { authService } from "./authService";
 
 export type InterviewMode =
   | "Technical Interview"

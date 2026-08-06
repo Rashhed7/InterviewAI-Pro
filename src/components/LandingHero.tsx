@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Star, CheckCircle2 } from "lucide-react";
-import { heroFeatures, type HeroFeature } from "../data/landing";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { heroFeatures } from "../data/landing";
 import InteractiveCanvasHero from "./InteractiveCanvasHero";
 
 export default function LandingHero() {

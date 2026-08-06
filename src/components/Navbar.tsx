@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sun,
@@ -19,7 +19,6 @@ import { subscriptionService } from "../services/subscriptionService";
 import { SubscriptionBadge } from "./subscription/SubscriptionBadge";
 
 export function Navbar() {
-  const location = useLocation();
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
   const { effectiveTheme, toggleTheme } = useTheme();
