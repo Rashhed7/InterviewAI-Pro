@@ -96,7 +96,7 @@ function VerifyEmail() {
             Verify Email Address
           </h1>
           <p className="text-center text-gray-400 mt-2 text-sm">
-            Enter the 6-digit OTP code sent to your email address.
+            Enter the 6-digit OTP code sent to your email address (check Inbox & Spam folder).
           </p>
 
           {error && (

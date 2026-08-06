@@ -1,8 +1,6 @@
 import { Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../config/prisma";
 import { AuthRequest } from "../middlewares/auth.middleware";
-
-const prisma = new PrismaClient();
 
 // In-memory data store fallback
 const adminMockStore = {

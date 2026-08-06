@@ -1,33 +1,63 @@
 import { Response } from "express";
 import { AuthRequest } from "../middlewares/auth.middleware";
-
-// In-memory subscription store fallback if Prisma database is not connected
-const inMemorySubStore = new Map<string, any>();
+import prisma from "../config/prisma";
 
 export const getSubscriptionStatus = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.userId || req.user?.id || "guest";
+    const userId = req.user?.userId || req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        plan: true,
+        freeInterviewCount: true,
+        freeResumeCount: true,
+        freeCodingCount: true,
+        lastUsageReset: true,
+      },
+    });
+
+    if (!dbUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
     const today = new Date().toISOString().split("T")[0];
+    const lastReset = dbUser.lastUsageReset ? dbUser.lastUsageReset.toISOString().split("T")[0] : today;
 
-    let sub = inMemorySubStore.get(userId) || {
-      plan: "FREE",
-      dailyInterviewCount: 0,
-      dailyResumeCount: 0,
-      dailyCodingCount: 0,
-      lastResetDate: today,
-    };
+    let interviewCount = dbUser.freeInterviewCount;
+    let resumeCount = dbUser.freeResumeCount;
+    let codingCount = dbUser.freeCodingCount;
 
-    if (sub.lastResetDate !== today) {
-      sub.dailyInterviewCount = 0;
-      sub.dailyResumeCount = 0;
-      sub.dailyCodingCount = 0;
-      sub.lastResetDate = today;
-      inMemorySubStore.set(userId, sub);
+    // Reset daily counts if lastUsageReset is before today
+    if (lastReset !== today) {
+      interviewCount = 0;
+      resumeCount = 0;
+      codingCount = 0;
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          freeInterviewCount: 0,
+          freeResumeCount: 0,
+          freeCodingCount: 0,
+          lastUsageReset: new Date(),
+        },
+      });
     }
 
     return res.status(200).json({
       success: true,
-      subscription: sub,
+      subscription: {
+        plan: dbUser.plan,
+        dailyInterviewCount: interviewCount,
+        dailyResumeCount: resumeCount,
+        dailyCodingCount: codingCount,
+        lastResetDate: today,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -39,7 +69,11 @@ export const getSubscriptionStatus = async (req: AuthRequest, res: Response) => 
 
 export const upgradePlan = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.userId || req.user?.id || "guest";
+    const userId = req.user?.userId || req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
     const { plan } = req.body;
 
     if (!["FREE", "PRO", "PREMIUM"].includes(plan)) {
@@ -49,21 +83,35 @@ export const upgradePlan = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const today = new Date().toISOString().split("T")[0];
-    let sub = inMemorySubStore.get(userId) || {
-      dailyInterviewCount: 0,
-      dailyResumeCount: 0,
-      dailyCodingCount: 0,
-      lastResetDate: today,
-    };
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { plan: plan as any },
+    });
 
-    sub.plan = plan;
-    inMemorySubStore.set(userId, sub);
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 1);
+
+    await prisma.subscription.create({
+      data: {
+        userId,
+        plan: plan as any,
+        status: "ACTIVE",
+        endDate,
+      },
+    });
+
+    const today = new Date().toISOString().split("T")[0];
 
     return res.status(200).json({
       success: true,
       message: `Plan successfully upgraded to ${plan}`,
-      subscription: sub,
+      subscription: {
+        plan: updatedUser.plan,
+        dailyInterviewCount: updatedUser.freeInterviewCount,
+        dailyResumeCount: updatedUser.freeResumeCount,
+        dailyCodingCount: updatedUser.freeCodingCount,
+        lastResetDate: today,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -75,22 +123,34 @@ export const upgradePlan = async (req: AuthRequest, res: Response) => {
 
 export const syncSubscription = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.userId || req.user?.id || "guest";
-    const { plan, dailyInterviewCount, dailyResumeCount, dailyCodingCount, lastResetDate } = req.body;
+    const userId = req.user?.userId || req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
-    const sub = {
-      plan: plan || "FREE",
-      dailyInterviewCount: dailyInterviewCount || 0,
-      dailyResumeCount: dailyResumeCount || 0,
-      dailyCodingCount: dailyCodingCount || 0,
-      lastResetDate: lastResetDate || new Date().toISOString().split("T")[0],
-    };
+    const { plan, dailyInterviewCount, dailyResumeCount, dailyCodingCount } = req.body;
 
-    inMemorySubStore.set(userId, sub);
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(plan && { plan: plan as any }),
+        ...(dailyInterviewCount !== undefined && { freeInterviewCount: dailyInterviewCount }),
+        ...(dailyResumeCount !== undefined && { freeResumeCount: dailyResumeCount }),
+        ...(dailyCodingCount !== undefined && { freeCodingCount: dailyCodingCount }),
+      },
+    });
+
+    const today = new Date().toISOString().split("T")[0];
 
     return res.status(200).json({
       success: true,
-      subscription: sub,
+      subscription: {
+        plan: updatedUser.plan,
+        dailyInterviewCount: updatedUser.freeInterviewCount,
+        dailyResumeCount: updatedUser.freeResumeCount,
+        dailyCodingCount: updatedUser.freeCodingCount,
+        lastResetDate: today,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({

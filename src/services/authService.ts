@@ -53,29 +53,7 @@ export const authService = {
 
       return data;
     } catch (error: any) {
-      // Fallback offline authentication session when backend API server is unreachable
-      const isAdmin = email.toLowerCase().includes("admin");
-      const user: UserProfile = {
-        id: "user-" + Date.now(),
-        name: isAdmin ? "Admin User" : (email.split("@")[0] || "User"),
-        email: email,
-        role: isAdmin ? "admin" : "user",
-        isVerified: true,
-        isEmailVerified: true,
-        authProvider: "local",
-        createdAt: new Date().toISOString(),
-      };
-
-      const fallbackToken = "mock_jwt_token_" + Date.now();
-      localStorage.setItem("token", fallbackToken);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return {
-        success: true,
-        message: "Logged in successfully",
-        token: fallbackToken,
-        user,
-      };
+      throw error;
     }
   },
 
@@ -98,27 +76,7 @@ export const authService = {
         }
       );
     } catch (error: any) {
-      const isAdmin = email.toLowerCase().includes("admin");
-      const user: UserProfile = {
-        id: "user-" + Date.now(),
-        name,
-        email,
-        role: isAdmin ? "admin" : "user",
-        isVerified: true,
-        isEmailVerified: true,
-        authProvider: "local",
-        createdAt: new Date().toISOString(),
-      };
-      const fallbackToken = "mock_jwt_token_" + Date.now();
-      localStorage.setItem("token", fallbackToken);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return {
-        success: true,
-        message: "Registration successful! Account verified.",
-        token: fallbackToken,
-        user,
-      };
+      throw error;
     }
   },
 
@@ -148,27 +106,7 @@ export const authService = {
 
       return data;
     } catch (error: any) {
-      const isAdmin = email.toLowerCase().includes("admin");
-      const user: UserProfile = {
-        id: "user-" + Date.now(),
-        name,
-        email,
-        role: isAdmin ? "admin" : "user",
-        isVerified: true,
-        isEmailVerified: true,
-        authProvider: provider,
-        createdAt: new Date().toISOString(),
-      };
-      const fallbackToken = "mock_jwt_token_" + Date.now();
-      localStorage.setItem("token", fallbackToken);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return {
-        success: true,
-        message: "Logged in successfully",
-        token: fallbackToken,
-        user,
-      };
+      throw error;
     }
   },
 
@@ -205,7 +143,7 @@ export const authService = {
 
       return data;
     } catch (error: any) {
-      return { success: true, message: "Email verified successfully!" };
+      throw error;
     }
   },
 
@@ -217,7 +155,7 @@ export const authService = {
         body: JSON.stringify({ email }),
       });
     } catch (error: any) {
-      return { success: true, message: "Password reset OTP sent to your email." };
+      throw error;
     }
   },
 
@@ -233,7 +171,7 @@ export const authService = {
         body: JSON.stringify({ email, otp, newPassword }),
       });
     } catch (error: any) {
-      return { success: true, message: "Password reset successfully!" };
+      throw error;
     }
   },
 

@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../config/prisma";
 import { UserAIMemory } from "./types";
-
-const prisma = new PrismaClient();
 
 export class UserMemoryService {
   /**

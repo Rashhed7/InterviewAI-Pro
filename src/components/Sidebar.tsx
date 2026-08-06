@@ -52,7 +52,7 @@ export function Sidebar({ collapsed: externalCollapsed, onToggleCollapse }: Side
 
   const handleLogout = () => {
     authService.logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (

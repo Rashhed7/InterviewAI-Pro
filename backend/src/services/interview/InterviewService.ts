@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../config/prisma";
 import { ConversationMemory } from "./ConversationMemory";
 import { GeminiInterviewEngine } from "./GeminiInterviewEngine";
 import { InterviewReportGenerator } from "./InterviewReportGenerator";
@@ -13,8 +13,6 @@ import {
   InterviewState,
   NextQuestionResponse,
 } from "./types";
-
-const prisma = new PrismaClient();
 const activeSessions: Map<string, { memory: ConversationMemory; createdAt: number }> = new Map();
 
 // Session cleanup every 4 hours

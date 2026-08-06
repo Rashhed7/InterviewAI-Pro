@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
+import AuthCallback from "./pages/AuthCallback";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
@@ -86,6 +87,15 @@ const router = createBrowserRouter([
           <ForgotPassword />
         </PageTransition>
       </PublicRoute>
+    ),
+  },
+
+  {
+    path: "/auth/callback",
+    element: (
+      <PageTransition>
+        <AuthCallback />
+      </PageTransition>
     ),
   },
 

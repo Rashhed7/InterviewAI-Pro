@@ -509,7 +509,9 @@ export const interviewService = {
         method: "GET",
       });
     } catch (error) {
-      const storedPref = localStorage.getItem("onboardingPreferences");
+      const currentUser = authService.getCurrentUser();
+      const userKey = currentUser?.id || currentUser?.email || "default";
+      const storedPref = localStorage.getItem(`onboardingPreferences_${userKey}`) || localStorage.getItem("onboardingPreferences");
       let pref: any = {};
       if (storedPref) {
         try { pref = JSON.parse(storedPref); } catch {}
@@ -518,7 +520,7 @@ export const interviewService = {
       return {
         success: true,
         memory: {
-          userId: "user-1",
+          userId: currentUser?.id || "user-1",
           targetRole: pref.targetRole || "Full Stack Engineer",
           targetCompany: pref.targetCompany || "Google",
           totalInterviewsCompleted: 1,

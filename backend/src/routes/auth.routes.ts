@@ -6,6 +6,10 @@ import {
   verifyEmailController,
   resendOTPController,
   socialLoginController,
+  googleRedirect,
+  googleCallback,
+  githubRedirect,
+  githubCallback,
   getAllUsersController,
   forgotPasswordController,
   resetPasswordController,
@@ -21,6 +25,12 @@ const router = Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/social", socialLoginController);
+
+// OAuth Social Routes
+router.get("/google", googleRedirect);
+router.get("/google/callback", googleCallback);
+router.get("/github", githubRedirect);
+router.get("/github/callback", githubCallback);
 
 // OTP Email Verification Routes
 router.post("/verify-email", verifyEmailController);

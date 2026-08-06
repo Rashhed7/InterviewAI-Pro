@@ -4,8 +4,29 @@ import { Check, Sparkles, Zap, Crown, ArrowRight, ShieldCheck, HelpCircle } from
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { SUBSCRIPTION_PLANS, type PlanType } from "../constants/subscription";
-import { subscriptionService, type UserSubscriptionData } from "../services/subscriptionService";
+import { subscriptionService, paymentService, type UserSubscriptionData } from "../services/subscriptionService";
+import { authService } from "../services/authService";
 import { SubscriptionBadge } from "../components/subscription/SubscriptionBadge";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
 
 function Pricing() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
@@ -17,21 +38,97 @@ function Pricing() {
     subscriptionService.fetchSubscriptionFromBackend().then((sub) => {
       setSubscription(sub);
     });
+    loadRazorpayScript();
   }, []);
 
   const handleSelectPlan = async (targetPlan: PlanType) => {
     if (subscription.plan === targetPlan) return;
 
-    setActionLoading(targetPlan);
-    try {
-      const res = await subscriptionService.updatePlan(targetPlan);
-      if (res.success && res.subscription) {
-        setSubscription(res.subscription);
-        setToastMessage(`Successfully subscribed to ${SUBSCRIPTION_PLANS[targetPlan].name}!`);
-        setTimeout(() => setToastMessage(null), 4000);
+    if (targetPlan === "FREE") {
+      setActionLoading("FREE");
+      try {
+        const res = await subscriptionService.updatePlan("FREE");
+        if (res.success && res.subscription) {
+          setSubscription(res.subscription);
+          setToastMessage("Changed plan to Free.");
+        }
+      } catch (e: any) {
+        alert(e.message || "Failed to switch plan.");
+      } finally {
+        setActionLoading(null);
       }
-    } catch (e: any) {
-      alert("Plan update error: " + (e.message || "Failed to update plan."));
+      return;
+    }
+
+    // ZERO-TRUST RAZORPAY PAYMENT FLOW FOR PRO & PREMIUM
+    setActionLoading(targetPlan);
+
+    try {
+      const isScriptLoaded = await loadRazorpayScript();
+      if (!isScriptLoaded) {
+        alert("Failed to load Razorpay SDK. Please check your internet connection.");
+        setActionLoading(null);
+        return;
+      }
+
+      // STEP 1: Backend creates Razorpay order & registers Payment with status: PENDING
+      const orderData = await paymentService.createOrder(targetPlan);
+
+      if (!orderData.success || !orderData.orderId) {
+        throw new Error("Failed to initialize payment order.");
+      }
+
+      const currentUser = authService.getCurrentUser();
+
+      // STEP 2: Open Razorpay Payment Modal
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "InterviewAI Pro",
+        description: `Upgrade to ${targetPlan} Plan`,
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          setActionLoading(targetPlan);
+          try {
+            // STEP 3: Backend verifies signature & updates DB (Status: SUCCESS, Plan: PRO, Subscription: ACTIVE)
+            const verifyRes = await paymentService.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyRes.success) {
+              setToastMessage(`🎉 ${verifyRes.message}`);
+              await authService.fetchProfile();
+              const freshSub = await subscriptionService.fetchSubscriptionFromBackend();
+              setSubscription(freshSub);
+              setTimeout(() => setToastMessage(null), 5000);
+            }
+          } catch (verifyError: any) {
+            alert("Payment signature verification failed: " + (verifyError.message || "Invalid payment response"));
+          } finally {
+            setActionLoading(null);
+          }
+        },
+        prefill: {
+          name: currentUser?.name || "",
+          email: currentUser?.email || "",
+        },
+        theme: {
+          color: "#2563eb",
+        },
+      };
+
+      const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.on("payment.failed", function (response: any) {
+        alert(`Payment failed: ${response.error?.description || "Transaction cancelled"}`);
+        setActionLoading(null);
+      });
+
+      razorpayInstance.open();
+    } catch (err: any) {
+      alert("Payment Error: " + (err.message || "Failed to initiate payment"));
     } finally {
       setActionLoading(null);
     }

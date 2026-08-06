@@ -22,12 +22,17 @@ export async function apiRequest<T>(
 
   const data = await response.json();
 
-  // Auto logout if JWT expired
+  // Auto logout if JWT expired (only redirect on protected pages when a token was present)
   if (response.status === 401) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    window.location.href = "/login";
+    const publicPaths = ["/", "/login", "/register", "/pricing", "/verify-email", "/forgot-password"];
+    const isPublicPage = publicPaths.includes(window.location.pathname);
+
+    if (token && !isPublicPage) {
+      window.location.href = "/login";
+    }
   }
 
   if (!response.ok) {

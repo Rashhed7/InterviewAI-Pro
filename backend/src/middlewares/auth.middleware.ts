@@ -24,7 +24,7 @@ export const authenticate = (
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET || "interview_ai_pro_super_secret_jwt_key_2026"
     );
 
     req.user = decoded;

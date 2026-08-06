@@ -55,8 +55,15 @@ function Settings() {
     }
     setUser(currentUser);
 
-    // Load candidate interview preferences
-    const savedPrefs = localStorage.getItem("onboardingPreferences");
+    // Fetch fresh profile from backend DB to guarantee user-specific credentials & role
+    authService.fetchProfile().then((freshUser) => {
+      if (freshUser) setUser(freshUser);
+    });
+
+    const userKey = currentUser.id || currentUser.email;
+
+    // Load candidate interview preferences scoped specifically to THIS user
+    const savedPrefs = localStorage.getItem(`onboardingPreferences_${userKey}`) || localStorage.getItem("onboardingPreferences");
     if (savedPrefs) {
       try {
         const parsed = JSON.parse(savedPrefs);
@@ -74,7 +81,7 @@ function Settings() {
       }).catch(() => {});
     }
 
-    const savedNotifs = localStorage.getItem("appNotifications");
+    const savedNotifs = localStorage.getItem(`appNotifications_${userKey}`);
     if (savedNotifs) {
       try {
         const parsed = JSON.parse(savedNotifs);
@@ -84,16 +91,17 @@ function Settings() {
       } catch (e) {}
     }
 
-    const savedLang = localStorage.getItem("appLanguage") || "en-US";
+    const savedLang = localStorage.getItem(`appLanguage_${userKey}`) || "en-US";
     setLanguage(savedLang);
   }, [navigate]);
 
   const handleSavePreferences = async (e: React.FormEvent) => {
     e.preventDefault();
     setPrefLoading(true);
+    const userKey = user?.id || user?.email || "default";
     const prefs = { targetRole, targetCompany, experienceLevel, resumeText };
-    localStorage.setItem("onboardingPreferences", JSON.stringify(prefs));
-    localStorage.setItem("hasCompletedOnboarding", "true");
+    localStorage.setItem(`onboardingPreferences_${userKey}`, JSON.stringify(prefs));
+    localStorage.setItem(`hasCompletedOnboarding_${userKey}`, "true");
 
     try {
       await interviewService.updateUserMemory({
@@ -110,15 +118,17 @@ function Settings() {
 
   const handleSaveNotifications = (e: React.FormEvent) => {
     e.preventDefault();
+    const userKey = user?.id || user?.email || "default";
     const settings = { emailNotifs, practiceReminders, productUpdates };
-    localStorage.setItem("appNotifications", JSON.stringify(settings));
+    localStorage.setItem(`appNotifications_${userKey}`, JSON.stringify(settings));
     setNotifSavedMsg("Notification preferences saved!");
     setTimeout(() => setNotifSavedMsg(null), 3000);
   };
 
   const handleSaveLanguage = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("appLanguage", language);
+    const userKey = user?.id || user?.email || "default";
+    localStorage.setItem(`appLanguage_${userKey}`, language);
     setLangSavedMsg("Language preference saved!");
     setTimeout(() => setLangSavedMsg(null), 3000);
   };
@@ -158,6 +168,46 @@ function Settings() {
             Customize target role preferences, visual theme, notification alerts, language, and security.
           </p>
         </div>
+
+        {/* USER PROFILE IDENTITY CARD */}
+        <section className="glass-card rounded-3xl p-6 space-y-4 border border-blue-500/20 bg-blue-500/5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white font-bold text-xl flex items-center justify-center shadow-lg shadow-blue-500/20 uppercase">
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-full h-full rounded-2xl object-cover" />
+                ) : (
+                  user.name ? user.name.charAt(0) : "U"
+                )}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 warm:text-[#2c251e]">{user.name}</h2>
+                  {((user as any).role === "ADMIN" || (user as any).role === "admin") && (
+                    <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-600 dark:text-amber-400">
+                      ADMIN
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 text-xs font-bold rounded-xl bg-blue-600 text-white">
+                {user.role || "USER"}
+              </span>
+              <span className="px-3 py-1 text-xs font-bold rounded-xl bg-purple-600 text-white">
+                {(user as any).plan || "FREE"} Plan
+              </span>
+              {user.isEmailVerified && (
+                <span className="px-3 py-1 text-xs font-bold rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400">
+                  Verified ✓
+                </span>
+              )}
+            </div>
+          </div>
+        </section>
 
         {/* SECTION 1: INTERVIEW & ROLE PREFERENCES */}
         <section className="glass-card rounded-3xl p-6 space-y-5">

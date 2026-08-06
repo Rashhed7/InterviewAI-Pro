@@ -150,6 +150,10 @@ export const subscriptionService = {
 
   // Fetch status from backend
   async fetchSubscriptionFromBackend(): Promise<UserSubscriptionData> {
+    if (!localStorage.getItem("token")) {
+      return this.getSubscription();
+    }
+
     try {
       const res = await apiRequest<{ success: boolean; subscription: UserSubscriptionData }>("/subscription/status", {
         method: "GET",
@@ -163,3 +167,46 @@ export const subscriptionService = {
     return this.getSubscription();
   },
 };
+
+// ZERO-TRUST RAZORPAY PAYMENT SERVICE
+export const paymentService = {
+  // 1. Create Razorpay order on backend (Inserts Payment record with status: PENDING)
+  async createOrder(plan: "PRO" | "PREMIUM"): Promise<{
+    success: boolean;
+    orderId: string;
+    amount: number;
+    currency: string;
+    keyId: string;
+    plan: string;
+  }> {
+    return await apiRequest("/payments/create-order", {
+      method: "POST",
+      body: JSON.stringify({ plan }),
+    });
+  },
+
+  // 2. Verify payment signature on backend (Verifies HMAC SHA256, marks Payment SUCCESS, User plan PRO, Subscription ACTIVE)
+  async verifyPayment(params: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+  }): Promise<{
+    success: boolean;
+    message: string;
+    user: any;
+    subscription: any;
+  }> {
+    return await apiRequest("/payments/verify-payment", {
+      method: "POST",
+      body: JSON.stringify(params),
+    });
+  },
+
+  // 3. Fetch user payment history
+  async getPaymentHistory(): Promise<{ success: boolean; payments: any[] }> {
+    return await apiRequest("/payments/history", {
+      method: "GET",
+    });
+  },
+};
+

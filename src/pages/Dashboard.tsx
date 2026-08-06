@@ -38,7 +38,8 @@ function Dashboard() {
     }
 
     setUser(currentUser);
-    setShowOnboarding(!localStorage.getItem("hasCompletedOnboarding"));
+    const userKey = currentUser.id || currentUser.email;
+    setShowOnboarding(!localStorage.getItem(`hasCompletedOnboarding_${userKey}`));
 
     subscriptionService.fetchSubscriptionFromBackend().then((sub) => {
       setUserSub(sub);
@@ -62,8 +63,9 @@ function Dashboard() {
     targetCompany: string;
     resumeText: string;
   }) => {
-    localStorage.setItem("hasCompletedOnboarding", "true");
-    localStorage.setItem("onboardingPreferences", JSON.stringify(data));
+    const userKey = user?.id || user?.email || "default";
+    localStorage.setItem(`hasCompletedOnboarding_${userKey}`, "true");
+    localStorage.setItem(`onboardingPreferences_${userKey}`, JSON.stringify(data));
     setShowOnboarding(false);
     setUserMemory((memory) =>
       memory

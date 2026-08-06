@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../config/prisma";
 
 // Save completed AI Mock Interview Session
 export const saveInterviewSession = async (

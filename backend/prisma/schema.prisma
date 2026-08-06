@@ -68,6 +68,13 @@ model User {
   payments Payment[]
 
   activityLogs ActivityLog[]
+  freeInterviewCount Int @default(0)
+
+  freeResumeCount Int @default(0)
+
+  freeCodingCount Int @default(0)
+
+  lastUsageReset DateTime @default(now())
 }
 
 model InterviewSession {
@@ -121,6 +128,7 @@ model CodingSubmission {
 }
 
 model Subscription {
+
   id String @id @default(cuid())
 
   userId String
@@ -129,9 +137,19 @@ model Subscription {
 
   status SubscriptionStatus @default(ACTIVE)
 
+  razorpaySubscriptionId String?
+
+  razorpayCustomerId String?
+
+  autoRenew Boolean @default(false)
+
   startDate DateTime @default(now())
 
   endDate DateTime
+
+  cancelledAt DateTime?
+
+  renewedAt DateTime?
 
   createdAt DateTime @default(now())
 
@@ -149,11 +167,27 @@ model Payment {
 
   currency String @default("INR")
 
-  provider String
+  provider String @default("RAZORPAY")
+
+  razorpayOrderId String?
+
+  razorpayPaymentId String?
+
+  razorpaySignature String?
 
   transactionId String?
 
+  invoiceId String?
+
+  receiptId String?
+
+  plan Plan
+
   status PaymentStatus @default(PENDING)
+
+  paymentMethod String?
+
+  paidAt DateTime?
 
   createdAt DateTime @default(now())
 
@@ -182,4 +216,29 @@ model ActivityLog {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model PlanFeature {
+
+  id String @id @default(cuid())
+
+  plan Plan
+
+  maxInterviews Int
+
+  maxResumeAnalysis Int
+
+  maxCodingProblems Int
+
+  cameraAnalysis Boolean
+
+  voiceInterview Boolean
+
+  codingArena Boolean
+
+  aiFeedback Boolean
+
+  analytics Boolean
+
+  exportPdf Boolean
 }

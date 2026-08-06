@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import prisma from "../config/prisma";
+import prisma, { withDbRetry } from "../config/prisma";
 import jwt from "jsonwebtoken";
 import { generateOTP } from "../utils/generateOTP";
 import {
@@ -8,15 +8,16 @@ import {
   sendResetPasswordEmail,
 } from "./email.service";
 
-const JWT_SECRET = process.env.JWT_SECRET || "interview_ai_pro_super_secret_jwt_key_2026";
+const getJwtSecret = () => process.env.JWT_SECRET || "interview_ai_pro_super_secret_jwt_key_2026";
 
 export const registerUser = async (
   name: string,
   email: string,
   password: string
 ) => {
+  const cleanEmail = email.trim().toLowerCase();
   const existingUser = await prisma.user.findUnique({
-    where: { email },
+    where: { email: cleanEmail },
   });
 
   if (existingUser) {
@@ -30,7 +31,7 @@ export const registerUser = async (
   const user = await prisma.user.create({
     data: {
       name,
-      email,
+      email: cleanEmail,
       password: hashedPassword,
       verificationToken: otp,
       verificationExpiry: expiry,
@@ -49,8 +50,9 @@ export const loginUser = async (
   email: string,
   password: string
 ) => {
+  const cleanEmail = email.trim().toLowerCase();
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { email: cleanEmail },
   });
 
   if (!user) {
@@ -68,8 +70,8 @@ export const loginUser = async (
   }
 
   const token = jwt.sign(
-    { userId: user.id, email: user.email },
-    JWT_SECRET,
+    { userId: user.id, email: user.email, role: user.role },
+    getJwtSecret(),
     { expiresIn: "7d" }
   );
 
@@ -87,8 +89,9 @@ export const verifyEmail = async (
   email: string,
   otp: string
 ) => {
+  const cleanEmail = email.trim().toLowerCase();
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { email: cleanEmail },
   });
 
   if (!user) {
@@ -108,7 +111,7 @@ export const verifyEmail = async (
   }
 
   const updatedUser = await prisma.user.update({
-    where: { email },
+    where: { email: cleanEmail },
     data: {
       isVerified: true,
       verificationToken: null,
@@ -120,8 +123,8 @@ export const verifyEmail = async (
   await sendCongratulationEmail(updatedUser.email, updatedUser.name);
 
   const token = jwt.sign(
-    { userId: updatedUser.id, email: updatedUser.email },
-    JWT_SECRET,
+    { userId: updatedUser.id, email: updatedUser.email, role: updatedUser.role },
+    getJwtSecret(),
     { expiresIn: "7d" }
   );
 
@@ -176,42 +179,46 @@ export const socialLogin = async (
   name: string,
   email: string
 ) => {
-  let user = await prisma.user.findUnique({
-    where: { email },
+  const cleanEmail = email.trim().toLowerCase();
+
+  return await withDbRetry(async () => {
+    let user = await prisma.user.findUnique({
+      where: { email: cleanEmail },
+    });
+
+    if (!user) {
+      // Create new user for social login
+      const randomPass = await bcrypt.hash(Math.random().toString(36), 10);
+      user = await prisma.user.create({
+        data: {
+          name,
+          email: cleanEmail,
+          password: randomPass,
+          isVerified: true,
+          provider,
+        },
+      });
+    } else if (!user.isVerified) {
+      // Mark as verified if logging in via social provider
+      user = await prisma.user.update({
+        where: { email: cleanEmail },
+        data: { isVerified: true, provider },
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role },
+      getJwtSecret(),
+      { expiresIn: "7d" }
+    );
+
+    const { password: _, ...safeUser } = user;
+
+    return {
+      token,
+      user: safeUser,
+    };
   });
-
-  if (!user) {
-    // Create new user for social login
-    const randomPass = await bcrypt.hash(Math.random().toString(36), 10);
-    user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: randomPass,
-        isVerified: true,
-        provider,
-      },
-    });
-  } else if (!user.isVerified) {
-    // Mark as verified if logging in via social provider
-    user = await prisma.user.update({
-      where: { email },
-      data: { isVerified: true, provider },
-    });
-  }
-
-  const token = jwt.sign(
-    { userId: user.id, email: user.email },
-    JWT_SECRET,
-    { expiresIn: "7d" }
-  );
-
-  const { password: _, ...safeUser } = user;
-
-  return {
-    token,
-    user: safeUser,
-  };
 };
 
 // ====================== DEVELOPER / ADMIN LIST ALL USERS ======================
@@ -223,6 +230,9 @@ export const getAllUsers = async () => {
       id: true,
       name: true,
       email: true,
+      avatar: true,
+      role: true,
+      plan: true,
       isVerified: true,
       provider: true,
       createdAt: true,
@@ -242,6 +252,9 @@ export const getUserById = async (userId: string) => {
       id: true,
       name: true,
       email: true,
+      avatar: true,
+      role: true,
+      plan: true,
       isVerified: true,
       provider: true,
       createdAt: true,

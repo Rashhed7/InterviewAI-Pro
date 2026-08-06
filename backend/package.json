@@ -1,13 +1,14 @@
 {
   "name": "interviewai-pro-backend",
   "version": "1.0.0",
-  "description": "Backend service for InterviewAI Pro with MongoDB and JWT Authentication",
+  "description": "Backend service for InterviewAI Pro with Neon PostgreSQL and JWT Authentication",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:test": "node test-db.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -16,9 +17,11 @@
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
+    "google-auth-library": "^11.0.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^9.0.3",
-    "prisma": "^6.16.2"
+    "prisma": "^6.16.2",
+    "razorpay": "^2.9.8"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
