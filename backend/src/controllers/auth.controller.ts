@@ -150,7 +150,11 @@ export const socialLoginController = async (req: Request, res: Response) => {
 // --- GOOGLE OAUTH HANDLERS ---
 export const googleRedirect = (req: Request, res: Response) => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:5000";
+  const backendUrl = process.env.BACKEND_URL;
+
+  if (!backendUrl) {
+  return res.status(500).send("BACKEND_URL is not configured");
+}
 
   if (!clientId || clientId.includes("YOUR_GOOGLE_CLIENT_ID")) {
     return res.status(400).send("Google Client ID is not configured. Please set GOOGLE_CLIENT_ID in backend/.env.");
@@ -165,8 +169,14 @@ export const googleRedirect = (req: Request, res: Response) => {
 
 export const googleCallback = async (req: Request, res: Response) => {
   const { code } = req.query;
-  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:5000";
+  const frontendUrl = process.env.FRONTEND_URL;
+  if (!frontendUrl) {
+  return res.status(500).send("FRONTEND_URL is not configured");
+}
+  const backendUrl = process.env.BACKEND_URL;
+  if (!backendUrl) {
+  return res.status(500).send("BACKEND_URL is not configured");
+}
 
   if (!code) {
     return res.redirect(`${frontendUrl}/login?error=Google authentication failed`);
@@ -214,7 +224,10 @@ export const googleCallback = async (req: Request, res: Response) => {
 // --- GITHUB OAUTH HANDLERS ---
 export const githubRedirect = (req: Request, res: Response) => {
   const clientId = process.env.GITHUB_CLIENT_ID;
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:5000";
+  const backendUrl = process.env.BACKEND_URL;
+  if (!backendUrl) {
+  return res.status(500).send("BACKEND_URL is not configured");
+}
 
   if (!clientId || clientId.includes("YOUR_GITHUB_CLIENT_ID")) {
     return res.status(400).send("GitHub Client ID is not configured. Please set GITHUB_CLIENT_ID in backend/.env.");
