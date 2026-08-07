@@ -248,7 +248,7 @@ function Register() {
         {/* Social Login Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <a
-            href="http://localhost:5000/api/auth/google"
+            href={`${import.meta.env.VITE_API_URL}/auth/google`}
             className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-zinc-800 bg-zinc-900/90 hover:bg-zinc-800 text-white text-xs font-semibold transition-all hover:border-zinc-700 shadow-md"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -273,7 +273,7 @@ function Register() {
           </a>
 
           <a
-            href="http://localhost:5000/api/auth/github"
+            href={`${import.meta.env.VITE_API_URL}/auth/github`}
             className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-zinc-800 bg-zinc-900/90 hover:bg-zinc-800 text-white text-xs font-semibold transition-all hover:border-zinc-700 shadow-md"
           >
             <svg className="w-4 h-4 fill-white shrink-0" viewBox="0 0 24 24">
